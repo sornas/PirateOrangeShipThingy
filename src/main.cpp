@@ -4,8 +4,14 @@
 
 struct GamePlayer {
     Vec2 position;
+    Vec2 velocity;
+    f32 rotation;
 
     f32 speed;
+    f32 braking_speed;
+    f32 rotation_speed;
+
+    f32 max_velocity;
 };
 
 struct GamePlayer player;
@@ -15,20 +21,39 @@ void update() {
 
     if (fog_input_down(NAME(UP), P1))
         player.position += fog_V2(0, +player.speed) * delta;
-        // player.position = fog_add_v2(player.position, fog_V2(0, +player.speed*delta));
     if (fog_input_down(NAME(DOWN), P1))
         player.position += fog_V2(0, -player.speed) * delta;
-        // player.position = fog_add_v2(player.position, fog_V2(0, -player.speed*delta));
     if (fog_input_down(NAME(LEFT), P1))
         player.position += fog_V2(-player.speed, 0) * delta;
-        // player.position = fog_add_v2(player.position, fog_V2(-player.speed*delta, 0));
     if (fog_input_down(NAME(RIGHT), P1))
         player.position += fog_V2(+player.speed, 0) * delta;
-        // player.position = fog_add_v2(player.position, fog_V2(+player.speed*delta, 0));
+
+    if (fog_input_down(NAME(UP), P1)) {
+        player.velocity += fog_rotate_v2(fog_V2(0, player.speed * delta), player.rotation);
+    }
+    if (fog_input_down(NAME(DOWN), P1)) {
+        player.velocity += fog_rotate_v2(fog_V2(0, -player.speed * delta / 2), player.rotation);
+    }
+    if (fog_input_down(NAME(LEFT), P1)) {
+        player.rotation += player.rotation_speed * delta;
+        player.velocity = fog_rotate_v2(player.velocity, player.rotation_speed * delta);
+    }
+    if (fog_input_down(NAME(RIGHT), P1)) {
+        player.rotation -= player.rotation_speed * delta;
+        player.velocity = fog_rotate_v2(player.velocity, -player.rotation_speed * delta);
+    }
+
+    player.velocity = player.velocity + (player.velocity * -(fog_length_v2(player.velocity)/player.max_velocity));
+    player.position += player.velocity;
+
+    fog_renderer_fetch_camera(0)->position = player.position;
 }
 
 void draw() {
-    fog_renderer_push_point(1, player.position, fog_V4(1, 0, 0, 1), 0.1);
+    fog_renderer_push_point(1, player.position, fog_V4(1, 0, 0, 1), 0.1);   // ship
+    fog_renderer_push_point(0, fog_V2(0.5, 0.5), fog_V4(0, 0, 0, 1), 0.3);  // island
+
+    fog_renderer_push_line(1, player.position, player.position + (player.velocity * 30), fog_V4(1, 0, 0, 1), 0.01);
 }
 
 int main(int argc, char **argv) {
@@ -47,7 +72,13 @@ int main(int argc, char **argv) {
 
     player = {
         fog_V2(0, 0),
-        2.0f,
+        fog_V2(0, 0),
+        0.0f,
+        0.01f,   // speed
+        0.005f,  // braking speed
+        2.0f,    // rotation
+
+        1,       // "max velocity"
     };
 
     fog_run(update, draw);

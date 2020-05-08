@@ -2,7 +2,7 @@
 
 #include "main.h"
 
-#include "tile.h"
+#include "island.h"
 
 struct GamePlayer {
     Vec2 position;
@@ -17,6 +17,12 @@ struct GamePlayer {
 };
 
 struct GamePlayer player;
+
+std::vector<Island> islands;
+
+void init_game() {
+    island_init(islands);
+}
 
 void update() {
     f32 delta = fog_logic_delta();
@@ -57,8 +63,9 @@ void draw() {
 
     fog_renderer_push_line(1, player.position, player.position + (player.velocity * 30), fog_V4(1, 0, 0, 1), 0.01);
 
-    draw_tile(GRASS, fog_V2(0, 0));
-    draw_tile(GRASS_RIGHT, fog_V2(0.5, 0));
+    for (Island& island : islands) {
+        island_draw(island);
+    }
 }
 
 int main(int argc, char **argv) {
@@ -75,8 +82,6 @@ int main(int argc, char **argv) {
     fog_input_add(fog_key_to_input_code(SDLK_a), NAME(LEFT), P1);
     fog_input_add(fog_key_to_input_code(SDLK_d), NAME(RIGHT), P1);
 
-    init_assets();
-
     player = {
         fog_V2(0, 0),
         fog_V2(0, 0),
@@ -87,6 +92,8 @@ int main(int argc, char **argv) {
 
         1,       // "max velocity"
     };
+
+    init_game();
 
     fog_run(update, draw);
     return 0;

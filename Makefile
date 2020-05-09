@@ -63,6 +63,7 @@ debug: $(GAME)
 
 .PHONY: engine
 engine: $(ENGINE_PATH)
+.PHONY: $(ENGINE_PATH)
 .NOTPARALLEL: $(ENGINE_PATH)
 $(ENGINE_PATH): | $(LIB_DIR) $(INC_DIR)
 	make -C $(FOG_DIR) engine ENGINE_LIBRARY_NAME=$(ENGINE) CXX=$(CXX)
@@ -83,6 +84,10 @@ clean:
 	rm -f *.o
 	rm -rf $(INC_DIR)
 	rm -rf $(LIB_DIR)
+
+.PHONY: clean-all
+clean-all: clean
+	make -C fog clean
 
 $(LIB_DIR):
 	mkdir -p $@

@@ -165,6 +165,16 @@ void draw() {
     dude.draw();
 
     draw_pirate_map(pirate_map, ship.body.position);
+
+    float text_alpha;
+    if (fog_logic_now() < 10) {
+        text_alpha = 1;
+    } else {
+        text_alpha = (20 - fog_logic_now()) / 10;
+        text_alpha = text_alpha < 0 ? 0 : text_alpha;
+    }
+        fog_renderer_draw_text("There is a treasure out there...", -0.9, -0.5, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
+        fog_renderer_draw_text("wasd to move - e to interact / leave ship", -0.9, -0.6, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
 }
 
 int main(int argc, char **argv) {

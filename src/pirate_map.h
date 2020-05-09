@@ -34,7 +34,7 @@ struct PirateMap {
             std::vector<bool> discovered_row;
             for (int j = 0; j < MAP_SIZE; j++) {
                 row.push_back(WATER_TILE);
-                discovered_row.push_back(false);
+                discovered_row.push_back(true);
             }
             tiles.push_back(row);
             discovered.push_back(discovered_row);

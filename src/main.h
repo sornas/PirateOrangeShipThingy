@@ -5,6 +5,7 @@ typedef enum {
     DOWN,
     LEFT,
     RIGHT,
+    TOGGLE_SHIP,
     NUM_BINDINGS
 } Binding;
 Name bindings[NUM_BINDINGS];

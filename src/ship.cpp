@@ -34,22 +34,22 @@ Ship init_ship(Vec2 position) {
 }
 
 void Ship::update() {
-    while (this->body.rotation < 0)    this->body.rotation += 2*PI;
-    while (this->body.rotation > 2*PI) this->body.rotation -= 2*PI;
+    while (body.rotation < 0)    body.rotation += 2*PI;
+    while (body.rotation > 2*PI) body.rotation -= 2*PI;
 
-    //this->body.velocity += (this->body.velocity * -(fog_length_v2(this-body.>velocity)/this->max_velocity));
-    //this->position += this->velocity;
+    //body.velocity += (body.velocity * -(fog_length_v2(this-body.>velocity)/max_velocity));
+    //position += velocity;
 
-    fog_physics_integrate(&this->body, fog_logic_delta());
+    fog_physics_integrate(&body, fog_logic_delta());
 }
 
 void Ship::draw() {
-    fog_physics_debug_draw_body(&this->body);
+    fog_physics_debug_draw_body(&body);
 
     s32 asset_scale_x = 0;
     f32 asset_rotation = 0;
 
-    if (this->body.rotation < PI) {
+    if (body.rotation < PI) {
         asset_scale_x = -1;
     } else {
         asset_scale_x = 1;
@@ -60,13 +60,13 @@ void Ship::draw() {
 
     fog_renderer_push_sprite_rect(
             0,
-            this->body.position,
-            fog_V2(0.4 * asset_scale_x, 0.4),
+            body.position,
+            fog_V2(body.scale.x * asset_scale_x, body.scale.y),
             asset_rotation,
             ASSET_SHIP,
             fog_V2(0, 0),
             fog_V2(512, 512),
             fog_V4(1, 1, 1, 1));
 
-    fog_renderer_push_line(1, this->body.position, this->body.position + (this->body.velocity), fog_V4(1, 0, 0, 1), 0.01);
+    fog_renderer_push_line(1, body.position, body.position + (body.velocity), fog_V4(1, 0, 0, 1), 0.01);
 }

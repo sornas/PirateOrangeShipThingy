@@ -23,13 +23,58 @@ void island_init(std::vector<Island>& islands) {
     // ~###~
     // ~~~~~
     predefined_islands.push_back({
-            fog_V2(0, 0), {
-                Tile(-1,  1), Tile(0,  1), Tile(1,  1),
-                Tile(-1,  0), Tile(0,  0), Tile(1,  0),
-                Tile(-1, -1), Tile(0, -1), Tile(1, -1),
-            }});
+        fog_V2(0, 0), {
+            Tile(-1,  1), Tile(0,  1), Tile(1,  1),
+            Tile(-1,  0), Tile(0,  0), Tile(1,  0),
+            Tile(-1, -1), Tile(0, -1), Tile(1, -1),
+        }
+    });
 
-    islands.push_back(predefined_islands[0]);
+    // Small island
+    // ~~~
+    // ~#~
+    // ~~~
+    predefined_islands.push_back({
+        fog_V2(0, 0), {
+            Tile(0,  0),
+        }
+    });
+
+    // Cresent island
+    // ~~~~~~~~~
+    // ~~####~~~
+    // ~##~~##~~
+    // ~~~~x~##~
+    // ~~~~~~##~
+    // ~##~~##~~
+    // ~~####~~~
+    // ~~~~~~~~~
+    predefined_islands.push_back({
+        fog_V2(0, 0), {
+            Tile(-2,  2), Tile(-1,  2), Tile(0,  2), Tile(1,  2),
+            Tile(-3,  1), Tile(-2,  1), Tile(1,  1), Tile(2,  1),
+            Tile(2,  0), Tile(3,  0),
+            Tile(2,  -1), Tile(3,  -1),
+            Tile(-3,  -2), Tile(-2,  -2), Tile(1,  -2), Tile(2,  -2),
+            Tile(-2,  -3), Tile(-1,  -3), Tile(0,  -3), Tile(1,  -3),
+        }
+    });
+
+    // L island
+    // ~~~~
+    // ~#~~
+    // ~#~~
+    // ~##~
+    // ~~~~
+    predefined_islands.push_back({
+        fog_V2(0, 0), {
+            Tile(-1,  1),
+            Tile(-1,  0),
+            Tile(-1, -1), Tile(0, -1),
+        }
+    });
+
+    islands.push_back(predefined_islands[3]);
 }
 
 void island_draw(Island& island) {

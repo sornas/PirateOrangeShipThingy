@@ -27,11 +27,12 @@ Dude init_dude(Vec2 position) {
         1,  // visible
         0,  // walking
         fog_logic_now(),  // prev_switch
-        0.33,  // frame_hold
+        0.1,  // frame_hold
         0,  // walking_id
         fog_asset_fetch_id("PIRATE_STILL"),
         fog_asset_fetch_id("PIRATE_WALKING_1"),
         fog_asset_fetch_id("PIRATE_WALKING_2"),
+        0,  // cur_asset
     };
 }
 
@@ -47,47 +48,38 @@ void Dude::draw() {
 
     fog_physics_debug_draw_body(&body);
 
-    if (!walking) {
-        fog_renderer_push_sprite_rect(
-                0,
-                body.position,
-                fog_V2(0.4, 0.4),
-                0,
-                ASSET_STAND,
-                fog_V2(0, 0),
-                fog_V2(512, 512),
-                fog_V4(1, 1, 1, 1));
-    } else {
+    if (walking) {
         walking = 0;
-        AssetID id;
 
         if (fog_logic_now() > prev_switch + frame_hold) {
             prev_switch = fog_logic_now();
             walking_asset_index = (walking_asset_index + 1) % 4;  // 4 states (see below)
             switch (walking_asset_index) {
             case 0:
-                id = ASSET_STAND;
+                cur_asset = ASSET_STAND;
                 break;
             case 1:
-                id = ASSET_WALK_01;
+                cur_asset = ASSET_WALK_01;
                 break;
             case 2:
-                id = ASSET_STAND;
+                cur_asset = ASSET_STAND;
                 break;
             case 3:
-                id = ASSET_WALK_02;
+                cur_asset = ASSET_WALK_02;
                 break;
             }
         }
-
-        fog_renderer_push_sprite_rect(
-                0,
-                body.position,
-                fog_V2(0.4, 0.4),
-                0,
-                id,
-                fog_V2(0, 0),
-                fog_V2(512, 512),
-                fog_V4(1, 1, 1, 1));
+    } else {
+        cur_asset = ASSET_STAND;
     }
+
+    fog_renderer_push_sprite_rect(
+            0,
+            body.position,
+            fog_V2(0.4, 0.4),
+            0,
+            cur_asset,
+            fog_V2(0, 0),
+            fog_V2(512, 512),
+            fog_V4(1, 1, 1, 1));
 }

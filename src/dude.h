@@ -11,6 +11,7 @@ struct Dude {
     AssetID ASSET_STAND;
     AssetID ASSET_WALK_01;
     AssetID ASSET_WALK_02;
+    AssetID cur_asset;
 
     void update();
     void draw();

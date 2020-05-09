@@ -3,22 +3,21 @@
 #include <iostream>
 
 void draw_pirate_map(PirateMap& pirate_map) {
-    Vec2 pos = fog_input_screen_to_world(fog_V2(0, 0), 0);
+    Vec2 pos = fog_V2(0, 0);
 
     Image* img = fog_asset_fetch_image(pirate_map.image_id);
-    img->data = (u8*) malloc(img->width * img->height * img->components);
+    img->data = (u8*) malloc(pirate_map.MAP_SIZE * pirate_map.MAP_SIZE * img->components);
     for (int i = 0; i < pirate_map.MAP_SIZE; i++) {
         for (int j = 0; j < pirate_map.MAP_SIZE; j++) {
-            img->data[img->components * (i * img->width + j) + 0] = 0;
-            img->data[img->components * (i * img->width + j) + 1] = 0;
-            img->data[img->components * (i * img->width + j) + 2] = 0;
+            for (int k = 0; k < img->components; k++) {
+                img->data[img->components * (i * img->width + j) + k] = i % 256;
+            }
         }
     }
 
-    pirate_map.image_id = fog_upload_texture(img, pirate_map.image_id);
+    fog_upload_texture(img, img->id);
     free(img->data);
 
-    std::cout << pirate_map.image_id << std::endl;
     fog_renderer_push_sprite_rect(
             0,
             pos,

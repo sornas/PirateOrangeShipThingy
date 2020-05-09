@@ -1,7 +1,5 @@
 struct Ship {
-    Vec2 position;
-    Vec2 velocity;
-    f32 rotation;
+    Body body;
 
     f32 speed;
     f32 braking_speed;
@@ -9,8 +7,7 @@ struct Ship {
 
     f32 max_velocity;
 
-    AssetID SHIP_RIGHT;
-    AssetID SHIP_LEFT;
+    AssetID ASSET_SHIP;
 
     void update();
     void draw();

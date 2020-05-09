@@ -42,7 +42,7 @@ ASSETS := $(shell find res -type f -name "*.*")
 
 HEADERS := $(shell find src -type f -name "*.h")
 SOURCES := $(shell find src -type f -name "*.cpp")
-OBJECTS := $(SOURCES:src/%.cpp=bin/%.o)
+OBJECTS := $(SOURCES:src/%.cpp=$(BIN_DIR)/%.o)
 
 default: all
 all: game
@@ -59,7 +59,7 @@ run: $(GAME)
 debug: $(GAME)
 	gdb -ex "b _fog_illegal_allocation" -ex "b _fog_close_app_responsibly" ./$(GAME)
 
-bin/%.o: src/%.cpp $(HEADERS) | bin
+$(BIN_DIR)/%.o: src/%.cpp $(HEADERS) | $(BIN_DIR)
 	$(CXX) $(DEBUG_FLAGS) -c $< -o $@ $(INCLUDES)
 
 .PHONY: engine $(ENGINE_PATH)
@@ -97,5 +97,5 @@ $(LIB_DIR):
 $(INC_DIR):
 	mkdir -p $@
 
-bin:
+$(BIN_DIR):
 	mkdir -p $@

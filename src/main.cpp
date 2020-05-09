@@ -10,6 +10,7 @@
 #include "pirate_map.h"
 
 #define PI 3.1415f
+#include <iostream>
 
 Ship ship;
 
@@ -25,14 +26,14 @@ AssetID SONG_01;
 AudioID music_background;
 
 void init_game() {
-    //island_init(islands);
+    island_init(islands);
     ship = init_ship(fog_V2(0, 0));
     WATER = fog_asset_fetch_id("SEA");
 
     SONG_01 = fog_asset_fetch_id("SONG_01_16K");
     //SONG_02 = fog_asset_fetch_id("SONG-02-16K");
 
-    pirate_map = PirateMap();
+    pirate_map = PirateMap(islands);
 }
 
 void update() {
@@ -58,6 +59,14 @@ void update() {
 
     fog_renderer_fetch_camera(0)->position = ship.body.position;
     fog_renderer_fetch_camera(0)->zoom = 0.7 - 0.2 * (fog_length_v2(ship.body.velocity) / 3.0);
+
+    // Discover surrounding area
+    for (int i = -8; i <= 8; i++) {
+        for (int j = -8; j <= 8; j++) {
+            Vec2 discovered_pos = ship.body.position + fog_V2(i, j);
+            pirate_map.discover(discovered_pos);
+        }
+    }
 }
 
 void draw() {

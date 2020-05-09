@@ -3,15 +3,17 @@
 #include <iostream>
 
 void draw_pirate_map(PirateMap& pirate_map) {
-    Vec2 pos = fog_V2(0, 0);
+    Camera *camera = fog_renderer_fetch_camera(0);
+    Vec2 pos = camera->position;
 
     Image* img = fog_asset_fetch_image(pirate_map.image_id);
     img->data = (u8*) malloc(pirate_map.MAP_SIZE * pirate_map.MAP_SIZE * img->components);
-    for (int i = 0; i < pirate_map.MAP_SIZE; i++) {
-        for (int j = 0; j < pirate_map.MAP_SIZE; j++) {
-            for (int k = 0; k < img->components; k++) {
-                img->data[img->components * (i * img->width + j) + k] = i % 256;
-            }
+    for (int x = 0; x < pirate_map.MAP_SIZE; x++) {
+        for (int y = 0; y < pirate_map.MAP_SIZE; y++) {
+            Vec3 color = color_from_map_tile(pirate_map.tiles[y][x]) * pirate_map.discovered[y][x];
+            img->data[img->components * (x * img->width + y) + 0] = (u8)color.x;
+            img->data[img->components * (x * img->width + y) + 1] = (u8)color.y;
+            img->data[img->components * (x * img->width + y) + 2] = (u8)color.z;
         }
     }
 
@@ -21,20 +23,21 @@ void draw_pirate_map(PirateMap& pirate_map) {
     fog_renderer_push_sprite_rect(
             0,
             pos,
-            fog_V2(1, 1),
+            fog_V2(1, 1) / camera->zoom,
             0,
             pirate_map.image_id,
             fog_V2(0, 0),
             fog_V2(128, 128),
             fog_V4(1, 1, 1, 1));
-    //for (int i = 0; i < pirate_map.MAP_SIZE; i++) {
-    //    for (int j = 0; j < pirate_map.MAP_SIZE; j++) {
-    //        fog_renderer_push_rectangle(
-    //            0,
-    //            fog_input_screen_to_world(fog_V2(j, i), 0),
-    //            fog_V2(1, 1) * pirate_map.TILE_SIZE,
-    //            fog_V4(1, 1, 1, 1)
-    //        );
-    //    }
-    //}
+}
+
+Vec3 color_from_map_tile(MapTile map_tile) {
+    switch (map_tile) {
+        case WATER_TILE:
+            return fog_V3(0, 128, 255);
+        case GRASS_TILE:
+            return fog_V3(0, 255, 0);
+        default:
+            return fog_V3(0, 0, 0);
+    }
 }

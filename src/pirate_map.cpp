@@ -35,7 +35,7 @@ void draw_pirate_map(PirateMap &pirate_map, Vec2 ship_position) {
     fog_renderer_push_point(
             0,
             map_position + ((ship_position - fog_V2(64, 64)) * point_size / camera->zoom),  //TODO(gu) not correct
-            fog_V4(1, 0, 0, 1),
+            fog_V4(150, 59, 51, 255) / 255,
             2*point_size / camera->zoom
     );
 
@@ -44,9 +44,9 @@ void draw_pirate_map(PirateMap &pirate_map, Vec2 ship_position) {
 Vec3 color_from_map_tile(MapTile map_tile) {
     switch (map_tile) {
         case WATER_TILE:
-            return fog_V3(0, 128, 255);
+            return fog_V3(56, 56, 113);
         case GRASS_TILE:
-            return fog_V3(0, 196, 0);
+            return fog_V3(66, 85, 51);
         default:
             return fog_V3(0, 0, 0);
     }

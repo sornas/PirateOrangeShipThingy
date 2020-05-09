@@ -52,10 +52,16 @@ void update() {
     }
 
     if (fog_input_down(NAME(UP), P1)) {
-        ship.body.velocity += fog_rotate_v2(fog_V2(0, ship.speed), ship.body.rotation);
+        ship.body.velocity += fog_rotate_v2(fog_V2(0, ship.speed * (1 - fog_length_v2(ship.body.velocity)/ship.max_velocity)), ship.body.rotation);
     }
     if (fog_input_down(NAME(DOWN), P1)) {
-        ship.body.velocity += fog_rotate_v2(fog_V2(0, -ship.braking_speed), ship.body.rotation);
+        if (fog_length_v2(ship.body.velocity) > 0) {
+            ship.body.velocity -= fog_rotate_v2(fog_V2(0, ship.braking_speed), ship.body.rotation);
+            if (fog_rotate_v2(ship.body.velocity, -ship.body.rotation).y < 0) {
+                ship.body.velocity = fog_V2(0, 0);
+            }
+        }
+
     }
     if (fog_input_down(NAME(LEFT), P1)) {
         ship.body.rotation += ship.rotation_speed * delta;

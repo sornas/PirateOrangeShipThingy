@@ -19,7 +19,7 @@ Ship init_ship(Vec2 position) {
         ship_shape = fog_physics_add_shape(4, points);
     }
 
-    Body body = fog_physics_create_body(ship_shape, 1.0, 0.1, 0.4);
+    Body body = fog_physics_create_body(ship_shape, 1.0, 0.1, 0.05);
     body.rotation = -PI/2;
     body.scale = fog_V2(0.4, 0.4);
 
@@ -28,7 +28,7 @@ Ship init_ship(Vec2 position) {
         0.01f,  // speed
         0.005f,  // braking speed
         2.0f,  // rotation speed
-        1.0f,  // velocity cap
+        3.5f,  // velocity cap
         fog_asset_fetch_id("SHIP"),
     };
 }

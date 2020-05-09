@@ -115,7 +115,7 @@ void draw() {
 
     ship.draw();
 
-    draw_pirate_map(pirate_map);
+    draw_pirate_map(pirate_map, ship);
 }
 
 int main(int argc, char **argv) {

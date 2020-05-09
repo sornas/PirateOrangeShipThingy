@@ -1,4 +1,5 @@
 #include "island.h"
+#include "pirate_map.h"
 
 AssetID CENTER;
 AssetID BOTTOM;
@@ -74,7 +75,30 @@ void island_init(std::vector<Island>& islands) {
         }
     });
 
-    islands.push_back(predefined_islands[3]);
+    int islands_left = 50;
+    while (islands_left--) {
+        Island to_place = predefined_islands[fog_random_int() % predefined_islands.size()];
+
+        while (true) {
+            Vec2 pos = fog_V2(fog_random_real(0.0, 1.0), fog_random_real(0.0, 1.0))
+                * PirateMap().MAP_SIZE;
+            pos.x = (int) pos.x;
+            pos.y = (int) pos.y;
+            bool can_place = true;
+            for (Island& island : islands) {
+                if (fog_distance_v2(island.position, pos) < 10) {
+                    can_place = false;
+                    break;
+                }
+            }
+
+            if (can_place) {
+                to_place.position = pos;
+                islands.push_back(to_place);
+                break;
+            }
+        }
+    }
 }
 
 void island_draw(Island& island) {
@@ -100,7 +124,7 @@ void island_draw(Island& island) {
     };
 
     for (Tile& tile : island.tiles) {
-        Vec2 tile_pos = (island.position + tile.rel_position) * 0.5;
+        Vec2 tile_pos = island.position + tile.rel_position * 0.5;
         int tile_index = 0;
         for (int j = 1; j >= -1; j--) {
             for (int i = -1; i <= 1; i++) {

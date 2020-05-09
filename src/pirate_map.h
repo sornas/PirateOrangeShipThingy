@@ -1,6 +1,7 @@
 #pragma once
 #include "fog.h"
 #include "island.h"
+#include "ship.h"
 #include <vector>
 
 enum MapTile {
@@ -54,5 +55,5 @@ struct PirateMap {
     }
 };
 
-void draw_pirate_map(PirateMap& pirate_map);
+void draw_pirate_map(PirateMap& pirate_map, Ship& ship);
 Vec3 color_from_map_tile(MapTile map_tile);

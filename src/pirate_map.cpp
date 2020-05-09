@@ -2,11 +2,13 @@
 #include <cstdlib>
 #include <iostream>
 
-void draw_pirate_map(PirateMap& pirate_map) {
+void draw_pirate_map(PirateMap& pirate_map, Ship& ship) {
     Camera *camera = fog_renderer_fetch_camera(0);
     Vec2 pos = camera->position;
 
     float point_size = 0.004;
+    Vec2 map_offset = pos + fog_V2(1, camera->aspect_ratio) * (1 - point_size *
+            pirate_map.MAP_SIZE) / camera->zoom;
 
     for (int x = 0; x < pirate_map.MAP_SIZE; x++) {
         for (int y = 0; y < pirate_map.MAP_SIZE; y++) {
@@ -14,12 +16,19 @@ void draw_pirate_map(PirateMap& pirate_map) {
             Vec3 color = color_from_map_tile(pirate_map.tiles[y][x]) * pirate_map.discovered[y][x];
             fog_renderer_push_point(
                 0,
-                pos + fog_V2(1, camera->aspect_ratio) * (1 - point_size * pirate_map.MAP_SIZE) / camera->zoom + rel_pos * point_size / camera->zoom,
+                map_offset + rel_pos * point_size / camera->zoom,
                 fog_V4(color.x, color.y, color.z, 1),
                 point_size / camera->zoom
             );
         }
     }
+
+    fog_renderer_push_point(
+            0,
+            map_offset + ship.body.position * point_size / camera->zoom,
+            fog_V4(1, 0, 0, 1),
+            point_size / camera->zoom
+    );
 }
 
 Vec3 color_from_map_tile(MapTile map_tile) {

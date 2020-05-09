@@ -61,9 +61,8 @@ debug: $(GAME)
 %.o: src/%.cpp $(HEADERS)
 	$(CXX) $(DEBUG_FLAGS) -c $< -o $@ $(INCLUDES)
 
-.PHONY: engine
+.PHONY: engine $(ENGINE_PATH)
 engine: $(ENGINE_PATH)
-.PHONY: $(ENGINE_PATH)
 .NOTPARALLEL: $(ENGINE_PATH)
 $(ENGINE_PATH): | $(LIB_DIR) $(INC_DIR)
 	make -C $(FOG_DIR) engine ENGINE_LIBRARY_NAME=$(ENGINE) CXX=$(CXX)
@@ -73,6 +72,8 @@ $(ENGINE_PATH): | $(LIB_DIR) $(INC_DIR)
 $(ASSET_BUILDER):
 	make -C $(FOG_DIR) mist
 
+.PHONY: assets
+assets: $(ASSET_FILE)
 $(ASSET_FILE): $(ASSETS) $(ASSET_BUILDER)
 	$(ASSET_BUILDER) -o $@ $(ASSETS)
 

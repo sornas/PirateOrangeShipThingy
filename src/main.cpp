@@ -158,7 +158,9 @@ void draw() {
     }
 
     for (Island& island : islands) {
-        //island_draw(island);
+        if (fog_distance_v2(island.position, ship.body.position) < 15) {
+            island_draw(island);
+        }
     }
 
     ship.draw();

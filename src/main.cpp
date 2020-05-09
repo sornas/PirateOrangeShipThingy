@@ -7,12 +7,16 @@
 
 #include "island.h"
 #include "ship.h"
+#include "pirate_map.h"
 
 #define PI 3.1415f
 
 Ship ship;
 
 std::vector<Island> islands;
+
+PirateMap pirate_map;
+
 
 AssetID WATER;
 
@@ -27,6 +31,8 @@ void init_game() {
 
     SONG_01 = fog_asset_fetch_id("SONG_01_16K");
     //SONG_02 = fog_asset_fetch_id("SONG-02-16K");
+
+    pirate_map = PirateMap();
 }
 
 void update() {
@@ -78,6 +84,8 @@ void draw() {
     }
 
     ship.draw();
+
+    draw_pirate_map(pirate_map);
 }
 
 int main(int argc, char **argv) {

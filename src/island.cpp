@@ -57,8 +57,8 @@ void island_draw(Island& island) {
     for (Tile& tile : island.tiles) {
         Vec2 tile_pos = (island.position + tile.rel_position) * 0.5;
         int tile_index = 0;
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
+        for (int j = 1; j >= -1; j--) {
+            for (int i = -1; i <= 1; i++) {
                 fog_renderer_push_sprite_rect(
                         0,                    // layer
                         tile_pos + fog_V2(i, j) * 0.5,
@@ -84,5 +84,5 @@ void init_assets() {
     TOP = fog_asset_fetch_id("GRASS_TOP");
     TOP_LEFT = fog_asset_fetch_id("GRASS_TOP_LEFT");
     TOP_RIGHT = fog_asset_fetch_id("GRASS_TOP_RIGHT");
-    SMALL_ISLAND = fog_renderer_push_sprite_rect("GRASS_SMALL");
+    SMALL_ISLAND = fog_asset_fetch_id("GRASS_SMALL");
 }

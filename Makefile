@@ -2,6 +2,7 @@ GAME = my_game
 FOG_DIR = fog
 LIB_DIR = lib
 INC_DIR = inc
+BIN_DIR = bin
 
 ARCH := $(shell uname -s | cut -c -5)
 
@@ -41,7 +42,7 @@ ASSETS := $(shell find res -type f -name "*.*")
 
 HEADERS := $(shell find src -type f -name "*.h")
 SOURCES := $(shell find src -type f -name "*.cpp")
-OBJECTS := $(SOURCES:src/%.cpp=%.o)
+OBJECTS := $(SOURCES:src/%.cpp=bin/%.o)
 
 default: all
 all: game
@@ -56,9 +57,9 @@ run: $(GAME)
 
 .PHONY: debug
 debug: $(GAME)
-	gdb -ex "b _fog_illegal_allocation" ./$(GAME)
+	gdb -ex "b _fog_illegal_allocation" -ex "b _fog_close_app_responsibly" ./$(GAME)
 
-%.o: src/%.cpp $(HEADERS)
+bin/%.o: src/%.cpp $(HEADERS) | bin
 	$(CXX) $(DEBUG_FLAGS) -c $< -o $@ $(INCLUDES)
 
 .PHONY: engine $(ENGINE_PATH)
@@ -94,4 +95,7 @@ $(LIB_DIR):
 	mkdir -p $@
 
 $(INC_DIR):
+	mkdir -p $@
+
+bin:
 	mkdir -p $@

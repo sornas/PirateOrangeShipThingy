@@ -28,27 +28,30 @@ void Ship::update() {
     this->position += this->velocity;
 }
 
+static inline
+f32 lerp_f32(f32 a, f32 b, f32 l) {
+    return a * (1.0f - l) + (b * l);
+}
+
 void Ship::draw() {
-    AssetID asset;
-    f32 asset_rotation;
-
-    if (this->rotation < PI) {
-        asset = SHIP_LEFT;
-        asset_rotation = -PI/2;
+    s32 asset_scale_x = 0;
+    f32 asset_rotation = 0;
+    
+    if (this->rotation > PI) {
+        asset_scale_x = -1;
     } else {
-        asset = SHIP_RIGHT;
-        asset_rotation = PI/2;
+        asset_scale_x = 1;
     }
-
+    
     asset_rotation -= 0.05;
     asset_rotation += sin(fog_logic_now()*2) / 10;
 
     fog_renderer_push_sprite_rect(
             0,
             this->position,
-            fog_V2(0.4, 0.4),
-            this->rotation + asset_rotation,
-            asset,
+            fog_V2(0.4 * asset_scale_x, 0.4),
+            asset_rotation,
+            SHIP_LEFT,
             fog_V2(0, 0),
             fog_V2(512, 512),
             fog_V4(1, 1, 1, 1));

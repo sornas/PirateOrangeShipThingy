@@ -6,8 +6,8 @@ struct Tile {
     Vec2 rel_position;
     AssetID tile_id;
 
-    Tile(Vec2 rel_position, AssetID tile_id) :
-        rel_position(rel_position),
+    Tile(s32 rel_x, s32 rel_y, AssetID tile_id) :
+        rel_position(fog_V2(rel_x, rel_y)),
         tile_id(tile_id)
     {}
 };

@@ -83,9 +83,9 @@ clean:
 	rm -f $(GAME)
 	rm -f $(GAME).exe
 	rm -f $(ASSET_FILE)
-	rm -f *.o
 	rm -rf $(INC_DIR)
 	rm -rf $(LIB_DIR)
+	rm -rf $(BIN_DIR)
 
 .PHONY: clean-all
 clean-all: clean

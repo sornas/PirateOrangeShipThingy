@@ -34,7 +34,7 @@ void draw_pirate_map(PirateMap &pirate_map, Vec2 ship_position) {
 
     fog_renderer_push_point(
             0,
-            map_position + (ship_position * point_size / camera->zoom),
+            map_position + ((ship_position - fog_V2(64, 64)) * point_size / camera->zoom),  //TODO(gu) not correct
             fog_V4(1, 0, 0, 1),
             2*point_size / camera->zoom
     );

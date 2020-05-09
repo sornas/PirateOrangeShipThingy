@@ -20,6 +20,7 @@ Ship init_ship(Vec2 position) {
     }
 
     Body body = fog_physics_create_body(ship_shape, 1.0, 0.1, 0.05);
+    body.position = fog_V2(64, 64);
     body.rotation = -PI/2;
     body.scale = fog_V2(0.4, 0.4);
 

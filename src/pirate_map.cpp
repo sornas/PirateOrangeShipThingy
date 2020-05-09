@@ -18,15 +18,16 @@ void draw_pirate_map(PirateMap& pirate_map) {
     fog_upload_texture(img, img->id);
     free(img->data);
 
-    fog_renderer_push_sprite_rect(
-            0,
-            pos,
-            fog_V2(1, 1),
-            0,
-            pirate_map.image_id,
-            fog_V2(0, 0),
-            fog_V2(128, 128),
-            fog_V4(1, 1, 1, 1));
+    //fog_renderer_push_sprite_rect(
+    //        0,
+    //        pos,
+    //        fog_V2(1, 1),
+    //        0,
+    //        pirate_map.image_id,
+    //        fog_V2(0, 0),
+    //        fog_V2(128, 128),
+    //        fog_V4(1, 1, 1, 1));
+
     //for (int i = 0; i < pirate_map.MAP_SIZE; i++) {
     //    for (int j = 0; j < pirate_map.MAP_SIZE; j++) {
     //        fog_renderer_push_rectangle(

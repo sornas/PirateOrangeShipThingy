@@ -7,16 +7,19 @@
 
 #include "island.h"
 #include "ship.h"
+#include "dude.h"
 #include "pirate_map.h"
 
 #define PI 3.1415f
 
 Ship ship;
+Dude dude;
+
+b8 controlling_dude = 1;
 
 std::vector<Island> islands;
 
 PirateMap pirate_map;
-
 
 AssetID WATER;
 
@@ -33,6 +36,8 @@ AudioID music_id;
 void init_game() {
     //island_init(islands);
     ship = init_ship(fog_V2(0, 0));
+    dude = init_dude(fog_V2(0, 0));
+
     WATER = fog_asset_fetch_id("SEA");
 
     music[0] = fog_asset_fetch_id("SONG_01_16K");
@@ -51,29 +56,49 @@ void update() {
         music_id = fog_mixer_play_sound(0, music[current_music], 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
     }
 
+    //TODO(gu) ideally input should be checked by the respective updates
     if (fog_input_down(NAME(UP), P1)) {
-        ship.body.velocity += fog_rotate_v2(fog_V2(0, ship.speed * (1 - fog_length_v2(ship.body.velocity)/ship.max_velocity)), ship.body.rotation);
+        if (controlling_dude) {
+            dude.body.position.y += dude.speed * delta;
+            dude.walking = true;
+        } else {
+            ship.body.velocity += fog_rotate_v2(fog_V2(0, ship.speed * (1 - fog_length_v2(ship.body.velocity)/ship.max_velocity)), ship.body.rotation);
+        }
     }
     if (fog_input_down(NAME(DOWN), P1)) {
-        if (fog_length_v2(ship.body.velocity) > 0) {
-            ship.body.velocity -= fog_rotate_v2(fog_V2(0, ship.braking_speed), ship.body.rotation);
-            if (fog_rotate_v2(ship.body.velocity, -ship.body.rotation).y < 0) {
-                ship.body.velocity = fog_V2(0, 0);
+        if (controlling_dude) {
+            dude.body.position.y -= dude.speed * delta;
+            dude.walking = true;
+        } else {
+            if (fog_length_v2(ship.body.velocity) > 0) {
+                ship.body.velocity -= fog_rotate_v2(fog_V2(0, ship.braking_speed), ship.body.rotation);
+                if (fog_rotate_v2(ship.body.velocity, -ship.body.rotation).y < 0) {
+                    ship.body.velocity = fog_V2(0, 0);
+                }
             }
         }
-
     }
     if (fog_input_down(NAME(LEFT), P1)) {
-        ship.body.rotation += ship.rotation_speed * delta;
-        ship.body.velocity = fog_rotate_v2(ship.body.velocity, ship.rotation_speed * delta);
+        if (controlling_dude) {
+            dude.body.position.x -= dude.speed * delta;
+            dude.walking = true;
+        } else {
+            ship.body.rotation += ship.rotation_speed * delta;
+            ship.body.velocity = fog_rotate_v2(ship.body.velocity, ship.rotation_speed * delta);
+        }
     }
     if (fog_input_down(NAME(RIGHT), P1)) {
-        ship.body.rotation -= ship.rotation_speed * delta;
-        ship.body.velocity = fog_rotate_v2(ship.body.velocity, -ship.rotation_speed * delta);
+        if (controlling_dude) {
+            dude.body.position.x += dude.speed * delta;
+            dude.walking = true;
+        } else {
+            ship.body.rotation -= ship.rotation_speed * delta;
+            ship.body.velocity = fog_rotate_v2(ship.body.velocity, -ship.rotation_speed * delta);
+        }
     }
     ship.update();
 
-    fog_util_show_f32("velocity", fog_length_v2(ship.body.velocity));
+    dude.update();
 
     fog_renderer_fetch_camera(0)->position = ship.body.position;
     fog_renderer_fetch_camera(0)->zoom = 0.7 - 0.2 * (fog_length_v2(ship.body.velocity) / 3.0);
@@ -103,6 +128,7 @@ void draw() {
     }
 
     ship.draw();
+    dude.draw();
 
     draw_pirate_map(pirate_map);
 }

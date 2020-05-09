@@ -20,23 +20,36 @@ PirateMap pirate_map;
 
 AssetID WATER;
 
+#define NUM_SONGS 2
 AssetID SONG_01;
 //AssetID SONG_02;
-AudioID music_background;
+AssetID SONG_FOG;
+
+u32 current_music = 0;
+AssetID music[NUM_SONGS] = {};
+
+AudioID music_id;
 
 void init_game() {
     //island_init(islands);
     ship = init_ship(fog_V2(0, 0));
     WATER = fog_asset_fetch_id("SEA");
 
-    SONG_01 = fog_asset_fetch_id("SONG_01_16K");
-    //SONG_02 = fog_asset_fetch_id("SONG-02-16K");
+    music[0] = fog_asset_fetch_id("SONG_01_16K");
+    //fog_asset_fetch_id("SONG-02-16K");
+    music[1] = fog_asset_fetch_id("FOGGIESTOFSONGS_8K");
 
     pirate_map = PirateMap();
 }
 
 void update() {
     f32 delta = fog_logic_delta();
+
+    if (fog_util_show_u32("Current track", current_music)) {
+        current_music = (current_music + 1) % NUM_SONGS;
+        fog_mixer_stop_sound(music_id);
+        music_id = fog_mixer_play_sound(0, music[current_music], 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
+    }
 
     if (fog_input_down(NAME(UP), P1)) {
         ship.body.velocity += fog_rotate_v2(fog_V2(0, ship.speed), ship.body.rotation);
@@ -104,7 +117,7 @@ int main(int argc, char **argv) {
 
     init_game();
 
-    music_background = fog_mixer_play_sound(0, SONG_01, 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
+    music_id = fog_mixer_play_sound(0, music[current_music], 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
 
     fog_run(update, draw);
     return 0;

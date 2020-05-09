@@ -1,4 +1,4 @@
-GAME = my_game
+GAME = pirates
 FOG_DIR = fog
 LIB_DIR = lib
 INC_DIR = inc
@@ -19,6 +19,7 @@ ifeq ($(TARGET),WINDOWS)
 	ARCH = MINGW
 	CC = x86_64-w64-mingw32-gcc
 	CXX = x86_64-w64-mingw32-g++
+	LIBS += -static-libgcc -static-libstdc++
 endif
 
 ENGINE = libfog.a

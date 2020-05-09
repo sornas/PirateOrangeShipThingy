@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "fog.h"
 
 #include "main.h"
@@ -38,10 +40,15 @@ void update() {
     }
     ship.update();
 
+    fog_util_show_f32("velocity", fog_length_v2(ship.velocity));
+
     fog_renderer_fetch_camera(0)->position = ship.position;
+    fog_renderer_fetch_camera(0)->zoom = 1 - pow((fog_length_v2(ship.velocity)/0.025), 2);
 }
 
 void draw() {
+
+    Vec2 offset = fog_V2(-sin(2*fog_logic_now())/40, 0);
 
     // Draw surrounding water
     for (int i = -8; i <= 8; i++) {
@@ -49,7 +56,7 @@ void draw() {
             Vec2 water_pos = fog_V2((int)ship.position.x, (int)ship.position.y) + fog_V2(i, j) * 0.5;
             fog_renderer_push_sprite_rect(
                     0,
-                    water_pos,
+                    water_pos + offset,
                     fog_V2(0.5, 0.5),
                     0,
                     WATER,

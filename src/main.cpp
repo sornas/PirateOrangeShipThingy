@@ -158,13 +158,13 @@ void draw() {
     }
 
     for (Island& island : islands) {
-        island_draw(island);
+        //island_draw(island);
     }
 
     ship.draw();
     dude.draw();
 
-    draw_pirate_map(pirate_map, ship);
+    draw_pirate_map(pirate_map, ship.body.position);
 }
 
 int main(int argc, char **argv) {

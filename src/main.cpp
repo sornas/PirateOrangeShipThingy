@@ -1,5 +1,6 @@
 #include <math.h>
 
+#define FOG_IMPL
 #include "fog.h"
 
 #include "main.h"
@@ -15,10 +16,17 @@ std::vector<Island> islands;
 
 AssetID WATER;
 
+AssetID SONG_01;
+//AssetID SONG_02;
+AudioID music_background;
+
 void init_game() {
     //island_init(islands);
     ship = init_ship(fog_V2(0, 0));
     WATER = fog_asset_fetch_id("SEA");
+
+    SONG_01 = fog_asset_fetch_id("SONG_01_16K");
+    //SONG_02 = fog_asset_fetch_id("SONG-02-16K");
 }
 
 void update() {
@@ -87,6 +95,8 @@ int main(int argc, char **argv) {
     fog_input_add(fog_key_to_input_code(SDLK_d), NAME(RIGHT), P1);
 
     init_game();
+
+    music_background = fog_mixer_play_sound(0, SONG_01, 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
 
     fog_run(update, draw);
     return 0;

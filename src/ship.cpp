@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "fog.h"
 
 #define PI 3.1415f
@@ -18,6 +20,14 @@ Ship init_ship(Vec2 position) {
     };
 }
 
+void Ship::update() {
+    while (this->rotation < 0)    this->rotation += 2*PI;
+    while (this->rotation > 2*PI) this->rotation -= 2*PI;
+
+    this->velocity = this->velocity + (this->velocity * -(fog_length_v2(this->velocity)/this->max_velocity));
+    this->position += this->velocity;
+}
+
 void Ship::draw() {
     AssetID asset;
     f32 asset_rotation;
@@ -29,6 +39,9 @@ void Ship::draw() {
         asset = SHIP_RIGHT;
         asset_rotation = PI/2;
     }
+
+    asset_rotation -= 0.05;
+    asset_rotation += sin(fog_logic_now()*2) / 10;
 
     fog_renderer_push_sprite_rect(
             0,

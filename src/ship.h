@@ -12,6 +12,7 @@ struct Ship {
     AssetID SHIP_RIGHT;
     AssetID SHIP_LEFT;
 
+    void update();
     void draw();
 };
 

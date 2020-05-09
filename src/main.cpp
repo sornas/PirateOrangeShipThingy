@@ -7,7 +7,7 @@
 
 #define PI 3.1415f
 
-struct Ship ship;
+Ship ship;
 
 std::vector<Island> islands;
 
@@ -32,11 +32,7 @@ void update() {
         ship.rotation -= ship.rotation_speed * delta;
         ship.velocity = fog_rotate_v2(ship.velocity, -ship.rotation_speed * delta);
     }
-    while (ship.rotation < 0)    ship.rotation += 2*PI;
-    while (ship.rotation > 2*PI) ship.rotation -= 2*PI;
-    fog_util_show_f32("rotation", ship.rotation);
-    ship.velocity = ship.velocity + (ship.velocity * -(fog_length_v2(ship.velocity)/ship.max_velocity));
-    ship.position += ship.velocity;
+    ship.update();
 
     fog_renderer_fetch_camera(0)->position = ship.position;
 }

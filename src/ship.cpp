@@ -61,7 +61,7 @@ void Ship::draw() {
     fog_renderer_push_sprite_rect(
             0,
             body.position,
-            fog_V2(0.4 * asset_scale_x, 0.4),
+            fog_V2(body.scale.x * asset_scale_x, body.scale.y),
             asset_rotation,
             ASSET_SHIP,
             fog_V2(0, 0),

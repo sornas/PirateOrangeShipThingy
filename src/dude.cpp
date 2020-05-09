@@ -6,7 +6,7 @@
 
 ShapeID dude_shape;
 
-Dude init_dude(Vec2 position) {
+Dude init_dude() {
     {
         Vec2 points[] = {
             fog_V2(0, 1),
@@ -19,12 +19,12 @@ Dude init_dude(Vec2 position) {
 
     Body body = fog_physics_create_body(dude_shape, 1.0, 0.1, 0.05);
     body.rotation = -PI/2;
-    body.scale = fog_V2(0.4, 0.4);
+    body.scale = fog_V2(0.2, 0.2);
 
     return {
         body,
         1,  // speed
-        1,  // visible
+        0,  // visible
         0,  // walking
         fog_logic_now(),  // prev_switch
         0.1,  // frame_hold
@@ -76,10 +76,17 @@ void Dude::draw() {
     fog_renderer_push_sprite_rect(
             0,
             body.position,
-            fog_V2(0.4, 0.4),
+            body.scale,
             0,
             cur_asset,
             fog_V2(0, 0),
             fog_V2(512, 512),
             fog_V4(1, 1, 1, 1));
+}
+
+void Dude::reset_at(Vec2 position) {
+    body.position = position;
+    prev_switch = fog_logic_now();
+    walking_asset_index = 0;
+    cur_asset = 0;
 }

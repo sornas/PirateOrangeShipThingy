@@ -15,6 +15,7 @@ struct Dude {
 
     void update();
     void draw();
+    void reset_at(Vec2 position);
 };
 
-Dude init_dude(Vec2 position);
+Dude init_dude();

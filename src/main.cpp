@@ -15,7 +15,7 @@
 Ship ship;
 Dude dude;
 
-b8 controlling_dude = 1;
+b8 controlling_dude = 0;
 
 std::vector<Island> islands;
 
@@ -36,7 +36,7 @@ AudioID music_id;
 void init_game() {
     //island_init(islands);
     ship = init_ship(fog_V2(0, 0));
-    dude = init_dude(fog_V2(0, 0));
+    dude = init_dude();
 
     WATER = fog_asset_fetch_id("SEA");
 
@@ -53,23 +53,16 @@ void update() {
     if (fog_util_show_u32("Current track", current_music)) {
         current_music = (current_music + 1) % NUM_SONGS;
         fog_mixer_stop_sound(music_id);
-        music_id = fog_mixer_play_sound(0, music[current_music], 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
+        music_id = fog_mixer_play_sound(0, music[current_music], 1.0,
+                AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
     }
 
     //TODO(gu) ideally input should be checked by the respective updates
-    if (fog_input_down(NAME(UP), P1)) {
-        if (controlling_dude) {
-            dude.body.position.y += dude.speed * delta;
-            dude.walking = true;
-        } else {
+    if (!controlling_dude) {
+        if (fog_input_down(NAME(UP), P1)) {
             ship.body.velocity += fog_rotate_v2(fog_V2(0, ship.speed * (1 - fog_length_v2(ship.body.velocity)/ship.max_velocity)), ship.body.rotation);
         }
-    }
-    if (fog_input_down(NAME(DOWN), P1)) {
-        if (controlling_dude) {
-            dude.body.position.y -= dude.speed * delta;
-            dude.walking = true;
-        } else {
+        if (fog_input_down(NAME(DOWN), P1)) {
             if (fog_length_v2(ship.body.velocity) > 0) {
                 ship.body.velocity -= fog_rotate_v2(fog_V2(0, ship.braking_speed), ship.body.rotation);
                 if (fog_rotate_v2(ship.body.velocity, -ship.body.rotation).y < 0) {
@@ -77,31 +70,60 @@ void update() {
                 }
             }
         }
-    }
-    if (fog_input_down(NAME(LEFT), P1)) {
-        if (controlling_dude) {
-            dude.body.position.x -= dude.speed * delta;
-            dude.walking = true;
-        } else {
+        if (fog_input_down(NAME(LEFT), P1)) {
             ship.body.rotation += ship.rotation_speed * delta;
             ship.body.velocity = fog_rotate_v2(ship.body.velocity, ship.rotation_speed * delta);
         }
-    }
-    if (fog_input_down(NAME(RIGHT), P1)) {
-        if (controlling_dude) {
-            dude.body.position.x += dude.speed * delta;
-            dude.walking = true;
-        } else {
+        if (fog_input_down(NAME(RIGHT), P1)) {
             ship.body.rotation -= ship.rotation_speed * delta;
             ship.body.velocity = fog_rotate_v2(ship.body.velocity, -ship.rotation_speed * delta);
         }
+
+        if (fog_input_pressed(NAME(TOGGLE_SHIP), P1)) {
+            ship.body.velocity = fog_V2(0, 0);
+            controlling_dude = 1;
+            dude.reset_at(ship.body.position);
+            dude.visible = 1;
+        }
+
+        fog_renderer_fetch_camera(0)->position = ship.body.position;
+        fog_renderer_fetch_camera(0)->zoom = 0.7 - 0.2 * (fog_length_v2(ship.body.velocity) / 3.0);
+    } else {  // controlling dude
+        Vec2 delta_pos = fog_V2(0, 0);
+
+        if (fog_input_down(NAME(UP), P1)) {
+            delta_pos.y += 1;
+        }
+        if (fog_input_down(NAME(DOWN), P1)) {
+            delta_pos.y -= 1;
+        }
+        if (fog_input_down(NAME(LEFT), P1)) {
+            delta_pos.x -= 1;
+        }
+        if (fog_input_down(NAME(RIGHT), P1)) {
+            delta_pos.x += 1;
+        }
+        if (!(delta_pos == fog_V2(0, 0))) {
+            dude.walking = 1;
+            if (fog_length_v2(delta_pos) > 1) {
+                dude.body.position += fog_normalize_v2(delta_pos) * dude.speed * delta;
+            } else {
+                dude.body.position += fog_normalize_v2(delta_pos) * dude.speed * delta;
+            }
+        }
+
+        if (fog_input_pressed(NAME(TOGGLE_SHIP), P1)) {
+            //TODO(gu): check if close to ship
+            controlling_dude = 0;
+            dude.visible = 0;
+        }
+
+        dude.update();
+        fog_renderer_fetch_camera(0)->position = dude.body.position;
+        fog_renderer_fetch_camera(0)->zoom = 1.5;
     }
-    ship.update();
 
-    dude.update();
-
-    fog_renderer_fetch_camera(0)->position = ship.body.position;
-    fog_renderer_fetch_camera(0)->zoom = 0.7 - 0.2 * (fog_length_v2(ship.body.velocity) / 3.0);
+    ship.update();  //(gu): ship should always update, not only when controlled
 }
 
 void draw() {
@@ -146,6 +168,7 @@ int main(int argc, char **argv) {
     fog_input_add(fog_key_to_input_code(SDLK_s), NAME(DOWN), P1);
     fog_input_add(fog_key_to_input_code(SDLK_a), NAME(LEFT), P1);
     fog_input_add(fog_key_to_input_code(SDLK_d), NAME(RIGHT), P1);
+    fog_input_add(fog_key_to_input_code(SDLK_SPACE), NAME(TOGGLE_SHIP), P1);
 
     init_game();
 

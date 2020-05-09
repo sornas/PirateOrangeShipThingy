@@ -9,6 +9,7 @@ AssetID RIGHT;
 AssetID TOP;
 AssetID TOP_LEFT;
 AssetID TOP_RIGHT;
+AssetID SMALL_ISLAND;
 
 void island_init(std::vector<Island>& islands) {
 
@@ -23,26 +24,53 @@ void island_init(std::vector<Island>& islands) {
     // ~~~~~
     predefined_islands.push_back({
             fog_V2(0, 0), {
-                Tile(-1,  1,  TOP_LEFT),    Tile(0,  1, TOP),     Tile(1,  1, TOP_RIGHT),
-                Tile(-1,  0,  LEFT),        Tile(0,  0, CENTER),  Tile(1,  0, RIGHT),
-                Tile(-1, -1,  BOTTOM_LEFT), Tile(0, -1, BOTTOM),  Tile(1, -1, BOTTOM_RIGHT),
+                Tile(-1,  1), Tile(0,  1), Tile(1,  1),
+                Tile(-1,  0), Tile(0,  0), Tile(1,  0),
+                Tile(-1, -1), Tile(0, -1), Tile(1, -1),
             }});
 
     islands.push_back(predefined_islands[0]);
 }
 
 void island_draw(Island& island) {
-    for (Tile& tile : island.tiles) {
-        Vec2 tile_pos = (island.position + tile.rel_position) * 0.5;
+
+    // Tiny island special case
+    if (island.tiles.size() == 1) {
         fog_renderer_push_sprite_rect(
                 0,                    // layer
-                tile_pos,
+                island.position,
                 fog_V2(0.5, 0.5),     // scale (world)
                 0,                    // rotation
-                tile.tile_id,
+                SMALL_ISLAND,
                 fog_V2(0, 0),         // uv min
                 fog_V2(512, 512),     // resolution
                 fog_V4(1, 1, 1, 1));  // color
+        return;
+    }
+
+    AssetID tile_ids[] = {
+        TOP_LEFT,    TOP,    TOP_RIGHT,
+        LEFT,        CENTER, RIGHT,
+        BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT
+    };
+
+    for (Tile& tile : island.tiles) {
+        Vec2 tile_pos = (island.position + tile.rel_position) * 0.5;
+        int tile_index = 0;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                fog_renderer_push_sprite_rect(
+                        0,                    // layer
+                        tile_pos + fog_V2(i, j) * 0.5,
+                        fog_V2(0.5, 0.5),     // scale (world)
+                        0,                    // rotation
+                        tile_ids[tile_index],
+                        fog_V2(0, 0),         // uv min
+                        fog_V2(512, 512),     // resolution
+                        fog_V4(1, 1, 1, 1));  // color
+                tile_index++;
+            }
+        }
     }
 }
 
@@ -56,4 +84,5 @@ void init_assets() {
     TOP = fog_asset_fetch_id("GRASS_TOP");
     TOP_LEFT = fog_asset_fetch_id("GRASS_TOP_LEFT");
     TOP_RIGHT = fog_asset_fetch_id("GRASS_TOP_RIGHT");
+    SMALL_ISLAND = fog_renderer_push_sprite_rect("GRASS_SMALL");
 }

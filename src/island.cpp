@@ -67,7 +67,7 @@ void island_init(std::vector<Island>& islands) {
     // ~##~
     // ~~~~
     predefined_islands.push_back({
-        fog_V2(0, 0), {
+        fog_V2(3, 3), {
             Tile(-1,  1),
             Tile(-1,  0),
             Tile(-1, -1), Tile(0, -1),

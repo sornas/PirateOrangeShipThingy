@@ -6,37 +6,28 @@ void draw_pirate_map(PirateMap& pirate_map) {
     Camera *camera = fog_renderer_fetch_camera(0);
     Vec2 pos = camera->position;
 
-    Image* img = fog_asset_fetch_image(pirate_map.image_id);
-    img->data = (u8*) malloc(pirate_map.MAP_SIZE * pirate_map.MAP_SIZE * img->components);
+    float point_size = 0.004;
+
     for (int x = 0; x < pirate_map.MAP_SIZE; x++) {
         for (int y = 0; y < pirate_map.MAP_SIZE; y++) {
+            Vec2 rel_pos = fog_V2(x, y);
             Vec3 color = color_from_map_tile(pirate_map.tiles[y][x]) * pirate_map.discovered[y][x];
-            img->data[img->components * (x * img->width + y) + 0] = (u8)color.x;
-            img->data[img->components * (x * img->width + y) + 1] = (u8)color.y;
-            img->data[img->components * (x * img->width + y) + 2] = (u8)color.z;
+            fog_renderer_push_point(
+                0,
+                pos + fog_V2(1, camera->aspect_ratio) * (1 - point_size * pirate_map.MAP_SIZE) / camera->zoom + rel_pos * point_size / camera->zoom,
+                fog_V4(color.x, color.y, color.z, 1),
+                point_size / camera->zoom
+            );
         }
     }
-
-    fog_upload_texture(img, img->id);
-    free(img->data);
-
-    fog_renderer_push_sprite_rect(
-            0,
-            pos,
-            fog_V2(1, 1) / camera->zoom,
-            0,
-            pirate_map.image_id,
-            fog_V2(0, 0),
-            fog_V2(128, 128),
-            fog_V4(1, 1, 1, 1));
 }
 
 Vec3 color_from_map_tile(MapTile map_tile) {
     switch (map_tile) {
         case WATER_TILE:
-            return fog_V3(0, 128, 255);
+            return fog_V3(0, 128, 255) / 255.0;
         case GRASS_TILE:
-            return fog_V3(0, 255, 0);
+            return fog_V3(0, 255, 0) / 255.0;
         default:
             return fog_V3(0, 0, 0);
     }

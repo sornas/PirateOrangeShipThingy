@@ -31,6 +31,8 @@ AssetID music[NUM_SONGS] = {};
 
 AudioID music_id;
 
+int VISION = 4;
+
 void init_game() {
     island_init(islands);
     ship = init_ship(fog_V2(0, 0));
@@ -46,11 +48,11 @@ void init_game() {
 void update() {
     f32 delta = fog_logic_delta();
 
-    if (fog_util_show_u32("Current track", current_music)) {
-        current_music = (current_music + 1) % NUM_SONGS;
-        fog_mixer_stop_sound(music_id);
-        music_id = fog_mixer_play_sound(0, music[current_music], 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
-    }
+    //if (fog_util_show_u32("Current track", current_music)) {
+    //    current_music = (current_music + 1) % NUM_SONGS;
+    //    fog_mixer_stop_sound(music_id);
+    //    music_id = fog_mixer_play_sound(0, music[current_music], 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
+    //}
 
     if (fog_input_down(NAME(UP), P1)) {
         ship.body.velocity += fog_rotate_v2(fog_V2(0, ship.speed * (1 - fog_length_v2(ship.body.velocity)/ship.max_velocity)), ship.body.rotation);
@@ -80,8 +82,8 @@ void update() {
     fog_renderer_fetch_camera(0)->zoom = 0.7 - 0.2 * (fog_length_v2(ship.body.velocity) / 3.0);
 
     // Discover surrounding area
-    for (int i = -8; i <= 8; i++) {
-        for (int j = -8; j <= 8; j++) {
+    for (int i = -VISION; i <= VISION; i++) {
+        for (int j = -VISION; j <= VISION; j++) {
             Vec2 discovered_pos = ship.body.position + fog_V2(i, j);
             pirate_map.discover(discovered_pos);
         }
@@ -92,8 +94,8 @@ void draw() {
     Vec2 offset = fog_V2(-sin(2*fog_logic_now())/40, 0);
 
     // Draw surrounding water
-    for (int i = -8; i <= 8; i++) {
-        for (int j = -8; j <= 8; j++) {
+    for (int i = -2*VISION; i <= 2*VISION; i++) {
+        for (int j = -2*VISION; j <= 2*VISION; j++) {
             Vec2 water_pos = fog_V2((int) ship.body.position.x, (int) ship.body.position.y) + fog_V2(i, j) * 0.5;
             fog_renderer_push_sprite_rect(
                     0,

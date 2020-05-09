@@ -12,6 +12,7 @@ struct PirateMap {
     std::vector<std::vector<MapTile>> tiles;
     std::vector<std::vector<bool>> discovered;
     AssetID image_id;
+    int a = 0;
 
     int MAP_SIZE = 128;
     int TILE_SIZE = 3;
@@ -29,6 +30,15 @@ struct PirateMap {
             }
             tiles.push_back(row);
             discovered.push_back(discovered_row);
+        }
+
+        for (Island& island : islands) {
+            for (Tile& tile : island.tiles) {
+                Vec2 position = island.position + tile.rel_position;
+                if (is_within_bounds(position)) {
+                    tiles[(int)position.y][(int)position.x] = GRASS_TILE;
+                }
+            }
         }
     }
 

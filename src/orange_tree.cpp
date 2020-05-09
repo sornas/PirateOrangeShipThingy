@@ -8,7 +8,7 @@ void OrangeTree::draw(Island& island) {
     fog_renderer_push_sprite_rect(
         0,
         this->position + island.position,
-        fog_V2(0.5, 0.5),
+        fog_V2(0.25, 0.5),
         0,
         ORANGE_TREE_BASE,
         fog_V2(0, 0),
@@ -18,7 +18,7 @@ void OrangeTree::draw(Island& island) {
 
     fog_renderer_push_sprite_rect(
         0,
-        this->position + island.position + fog_V2(0, 0.25),
+        this->position + island.position + fog_V2(0, 0.30),
         fog_V2(0.5, 0.5),
         0,
         ORANGE_TREE_CROWN,

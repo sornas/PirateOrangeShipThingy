@@ -24,15 +24,10 @@ PirateMap pirate_map;
 
 AssetID WATER;
 
-#define NUM_SONGS 2
-AssetID SONG_01;
-//AssetID SONG_02;
-AssetID SONG_FOG;
-
-u32 current_music = 0;
-AssetID music[NUM_SONGS] = {};
-
 AudioID music_id;
+AssetID SONG_01;
+AssetID SONG_02;
+AssetID SONG_FOG;
 
 int VISION = 4;
 
@@ -43,21 +38,15 @@ void init_game() {
 
     WATER = fog_asset_fetch_id("SEA");
 
-    music[0] = fog_asset_fetch_id("SONG_01_16K");
-    //fog_asset_fetch_id("SONG-02-16K");
-    music[1] = fog_asset_fetch_id("FOGGIESTOFSONGS_8K");
+    SONG_01 = fog_asset_fetch_id("SONG_01_16K");
+    SONG_02 = fog_asset_fetch_id("SONG-02-16K");
+    SONG_FOG = fog_asset_fetch_id("FOGGIESTOFSONGS_8K");
 
     pirate_map = PirateMap(islands);
 }
 
 void update() {
     f32 delta = fog_logic_delta();
-
-    //if (fog_util_show_u32("Current track", current_music)) {
-    //    current_music = (current_music + 1) % NUM_SONGS;
-    //    fog_mixer_stop_sound(music_id);
-    //    music_id = fog_mixer_play_sound(0, music[current_music], 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
-    //}
 
     //TODO(gu) ideally input should be checked by the respective updates
     if (!controlling_dude) {
@@ -81,11 +70,17 @@ void update() {
             ship.body.velocity = fog_rotate_v2(ship.body.velocity, -ship.rotation_speed * delta);
         }
 
+        fog_util_show_f32("ship vel size", fog_length_v2(ship.body.velocity));
         if (fog_input_pressed(NAME(TOGGLE_SHIP), P1)) {
-            ship.body.velocity = fog_V2(0, 0);
-            controlling_dude = 1;
-            dude.reset_at(ship.body.position);
-            dude.visible = 1;
+            if (fog_length_v2(ship.body.velocity) < 0.15) {
+                ship.body.velocity = fog_V2(0, 0);
+                controlling_dude = 1;
+                dude.reset_at(ship.body.position);
+                dude.visible = 1;
+                fog_mixer_stop_sound(music_id);
+                music_id = fog_mixer_play_sound(0, SONG_01, 1.0,
+                        AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
+            }
         }
 
         fog_renderer_fetch_camera(0)->position = ship.body.position;
@@ -115,9 +110,13 @@ void update() {
         }
 
         if (fog_input_pressed(NAME(TOGGLE_SHIP), P1)) {
-            //TODO(gu): check if close to ship
-            controlling_dude = 0;
-            dude.visible = 0;
+            if (fog_physics_check_overlap(&dude.body, &ship.body).is_valid) {
+                controlling_dude = 0;
+                dude.visible = 0;
+                fog_mixer_stop_sound(music_id);
+                music_id = fog_mixer_play_sound(0, SONG_FOG, 1.0,
+                        AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
+            }
         }
 
         dude.update();
@@ -182,7 +181,7 @@ int main(int argc, char **argv) {
 
     init_game();
 
-    music_id = fog_mixer_play_sound(0, music[current_music], 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
+    music_id = fog_mixer_play_sound(0, SONG_FOG, 1.0, AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
 
     fog_run(update, draw);
     return 0;

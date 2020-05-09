@@ -11,8 +11,12 @@ Ship ship;
 
 std::vector<Island> islands;
 
+AssetID WATER;
+
 void init_game() {
     island_init(islands);
+    ship = init_ship(fog_V2(0, 0));
+    WATER = fog_asset_fetch_id("SEA");
 }
 
 void update() {
@@ -38,6 +42,24 @@ void update() {
 }
 
 void draw() {
+
+    // Draw surrounding water
+    for (int i = -8; i <= 8; i++) {
+        for (int j = -8; j <= 8; j++) {
+            Vec2 water_pos = fog_V2((int)ship.position.x, (int)ship.position.y) + fog_V2(i, j) * 0.5;
+            fog_renderer_push_sprite_rect(
+                    0,
+                    water_pos,
+                    fog_V2(0.5, 0.5),
+                    0,
+                    WATER,
+                    fog_V2(0, 0),
+                    fog_V2(512, 512),
+                    fog_V4(1, 1, 1, 1));
+        }
+    }
+
+
     for (Island& island : islands) {
         island_draw(island);
     }
@@ -60,7 +82,6 @@ int main(int argc, char **argv) {
     fog_input_add(fog_key_to_input_code(SDLK_d), NAME(RIGHT), P1);
 
     init_game();
-    ship = init_ship(fog_V2(0, 0));
 
     fog_run(update, draw);
     return 0;

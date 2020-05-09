@@ -1,4 +1,5 @@
 #include <math.h>
+#include <time.h>
 
 #define FOG_IMPL
 #include "fog.h"
@@ -32,6 +33,7 @@ AssetID SONG_FOG;
 int VISION = 4;
 
 void init_game() {
+    fog_random_seed(time(NULL));
     island_init(islands);
     ship = init_ship(fog_V2(0, 0));
     dude = init_dude();
@@ -42,6 +44,7 @@ void init_game() {
     SONG_02 = fog_asset_fetch_id("SONG-02-16K");
     SONG_FOG = fog_asset_fetch_id("FOGGIESTOFSONGS_8K");
 
+    init_orange_tree();
     pirate_map = PirateMap(islands);
 }
 

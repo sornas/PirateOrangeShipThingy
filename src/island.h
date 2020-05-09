@@ -1,6 +1,9 @@
 #pragma once
 #include "fog.h"
+#include "orange_tree.h"
 #include <vector>
+
+struct OrangeTree;
 
 struct Tile {
     Vec2 rel_position;
@@ -11,6 +14,7 @@ struct Tile {
 struct Island {
     Vec2 position;
     std::vector<Tile> tiles;
+    std::vector<OrangeTree> trees;
 };
 
 void init_assets();

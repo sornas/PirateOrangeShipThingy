@@ -36,7 +36,7 @@ Vec3 color_from_map_tile(MapTile map_tile) {
         case WATER_TILE:
             return fog_V3(0, 128, 255) / 255.0;
         case GRASS_TILE:
-            return fog_V3(0, 255, 0) / 255.0;
+            return fog_V3(0, 196, 0) / 255.0;
         default:
             return fog_V3(0, 0, 0);
     }

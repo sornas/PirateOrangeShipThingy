@@ -28,7 +28,8 @@ void island_init(std::vector<Island>& islands) {
             Tile(-1,  1), Tile(0,  1), Tile(1,  1),
             Tile(-1,  0), Tile(0,  0), Tile(1,  0),
             Tile(-1, -1), Tile(0, -1), Tile(1, -1),
-        }
+        },
+        { OrangeTree(0, 0) }
     });
 
     // Small island
@@ -38,7 +39,8 @@ void island_init(std::vector<Island>& islands) {
     predefined_islands.push_back({
         fog_V2(0, 0), {
             Tile(0,  0),
-        }
+        },
+        {}
     });
 
     // Cresent island
@@ -58,7 +60,8 @@ void island_init(std::vector<Island>& islands) {
             Tile(2,  -1), Tile(3,  -1),
             Tile(-3,  -2), Tile(-2,  -2), Tile(1,  -2), Tile(2,  -2),
             Tile(-2,  -3), Tile(-1,  -3), Tile(0,  -3), Tile(1,  -3),
-        }
+        },
+        {}
     });
 
     // L island
@@ -72,10 +75,11 @@ void island_init(std::vector<Island>& islands) {
             Tile(-1,  1),
             Tile(-1,  0),
             Tile(-1, -1), Tile(0, -1),
-        }
+        },
+        {}
     });
 
-    int islands_left = 50;
+    int islands_left = 70;
     while (islands_left--) {
         Island to_place = predefined_islands[fog_random_int() % predefined_islands.size()];
 
@@ -94,6 +98,9 @@ void island_init(std::vector<Island>& islands) {
 
             if (can_place) {
                 to_place.position = pos;
+                for (OrangeTree& tree : to_place.trees) {
+                    tree.oranges = fog_random_int() % 4;
+                }
                 islands.push_back(to_place);
                 break;
             }
@@ -140,6 +147,10 @@ void island_draw(Island& island) {
                 tile_index++;
             }
         }
+    }
+
+    for (OrangeTree& orange_tree : island.trees) {
+        orange_tree.draw(island);
     }
 }
 

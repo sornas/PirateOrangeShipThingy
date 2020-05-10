@@ -10,6 +10,7 @@
 #include "ship.h"
 #include "dude.h"
 #include "pirate_map.h"
+#include "treasure.h"
 
 #define PI 3.1415f
 #include <iostream>
@@ -23,6 +24,8 @@ std::vector<Island> islands;
 
 PirateMap pirate_map;
 
+Treasure treasure;
+
 AssetID WATER;
 
 AudioID music_id;
@@ -32,9 +35,13 @@ AssetID SONG_FOG;
 
 int VISION = 10;
 
+bool game_over = false;
+bool found_treasure = false;
+
 void init_game() {
     fog_random_seed(time(NULL));
     island_init(islands);
+    treasure = init_treasure(islands);
     ship = init_ship(fog_V2(0, 0));
     dude = init_dude();
 
@@ -50,6 +57,10 @@ void init_game() {
 
 void update() {
     f32 delta = fog_logic_delta();
+
+    if (game_over) {
+        return;
+    }
 
     //TODO(gu) ideally input should be checked by the respective updates
     if (!controlling_dude) {
@@ -130,6 +141,9 @@ void update() {
                 fog_mixer_stop_sound(music_id);
                 music_id = fog_mixer_play_sound(0, SONG_FOG, 1.0,
                         AUDIO_DEFAULT_GAIN, AUDIO_DEFAULT_VARIANCE, AUDIO_DEFAULT_VARIANCE, 1);
+            } else if (fog_physics_check_overlap(&dude.body, &treasure.body).is_valid) {
+                game_over = true;
+                found_treasure = true;
             }
         }
 
@@ -179,8 +193,12 @@ void draw() {
     fog_renderer_push_line(15, fog_V2(128, 128), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
     fog_renderer_push_line(15, fog_V2(128, 128), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
 
+    treasure.draw();
     ship.draw();
     dude.draw();
+
+    // Line to treasure for debugging
+    fog_renderer_push_line(0, ship.body.position, treasure.body.position, fog_V4(1, 0, 0, 1), 0.01);
 
     draw_pirate_map(pirate_map, ship.body.position);
 
@@ -191,8 +209,20 @@ void draw() {
         text_alpha = (20 - fog_logic_now()) / 10;
         text_alpha = text_alpha < 0 ? 0 : text_alpha;
     }
+
+    if (text_alpha) {
         fog_renderer_draw_text("There is a treasure out there...", -0.9, -0.5, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
         fog_renderer_draw_text("WASD to move - E to interact / leave ship", -0.9, -0.6, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
+    }
+
+    if (game_over) {
+        const char* text1 = found_treasure ? "You found the fabled treasure" :
+            "You have fallen due to scurvy";
+        const char* text2 = found_treasure ? "But at what cost?" :
+            "There is still a treasure out there...";
+        fog_renderer_draw_text(text1, -0.9, -0.5, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, 1), 0.1, false);
+        fog_renderer_draw_text(text2, -0.9, -0.6, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, 1), 0.1, false);
+    }
 }
 
 int main(int argc, char **argv) {
@@ -208,7 +238,7 @@ int main(int argc, char **argv) {
     fog_input_add(fog_key_to_input_code(SDLK_s), NAME(DOWN), P1);
     fog_input_add(fog_key_to_input_code(SDLK_a), NAME(LEFT), P1);
     fog_input_add(fog_key_to_input_code(SDLK_d), NAME(RIGHT), P1);
-    fog_input_add(fog_key_to_input_code(SDLK_SPACE), NAME(TOGGLE_SHIP), P1);
+    fog_input_add(fog_key_to_input_code(SDLK_e), NAME(TOGGLE_SHIP), P1);
 
     init_game();
 

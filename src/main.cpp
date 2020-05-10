@@ -35,8 +35,11 @@ AssetID SONG_FOG;
 
 int VISION = 10;
 
-bool game_over = false;
-bool found_treasure = false;
+bool game_over;
+bool found_treasure;
+
+float scurvy;
+float scurvy_decay = 1.0 / 180;
 
 void init_game() {
     fog_random_seed(time(NULL));
@@ -53,6 +56,10 @@ void init_game() {
 
     init_orange_tree();
     pirate_map = PirateMap(islands);
+
+    game_over = false;
+    found_treasure = false;
+    scurvy = 1;
 }
 
 void update() {
@@ -161,6 +168,12 @@ void update() {
     }
 
     ship.update();  //(gu): ship should always update, not only when controlled
+
+    scurvy -= scurvy_decay * (0.5 + scurvy * 0.5) * delta;
+    if (scurvy < 0) {
+        scurvy = 0;
+        game_over = true;
+    }
 }
 
 void draw() {
@@ -201,6 +214,37 @@ void draw() {
     fog_renderer_push_line(0, ship.body.position, treasure.body.position, fog_V4(1, 0, 0, 1), 0.01);
 
     draw_pirate_map(pirate_map, ship.body.position);
+
+    // Draw scurvy meter
+    Camera *camera = fog_renderer_fetch_camera(0);
+    Vec2 scurvy_position = camera->position;
+    scurvy_position = scurvy_position - fog_V2(0.5, camera->aspect_ratio) * 0.9 / camera->zoom;
+
+    Vec2 meter_width = fog_V2(1.0, 0.0) / camera->zoom;
+    Vec2 meter_height = fog_V2(0.0, 0.07) / camera->zoom;
+    Vec2 meter_top_left = scurvy_position + (meter_height - meter_width) * 0.5;
+    //fog_renderer_push_rectangle(
+    //    0,
+    //    scurvy_position,
+    //    fog_V2(1, 0.07) / camera->zoom,
+    //    fog_V4(0.8, 0.3, 0, 1)
+    //);
+
+    fog_renderer_push_rectangle(
+        0,
+        scurvy_position - fog_V2(1 - scurvy, 0) * 0.5 / camera->zoom,
+        fog_V2(scurvy, 0.07) / camera->zoom,
+        fog_V4(178, 120, 53, 255) / 255
+    );
+
+    fog_renderer_push_line(0, meter_top_left, meter_top_left + meter_width, fog_V4(1, 1, 1, 1), 0.01);
+    fog_renderer_push_line(0, meter_top_left - meter_height, meter_top_left - meter_height + meter_width, fog_V4(1, 1, 1, 1), 0.01);
+    fog_renderer_push_line(0, meter_top_left + meter_width, meter_top_left + meter_width - meter_height, fog_V4(1, 1, 1, 1), 0.01);
+    fog_renderer_push_line(0, meter_top_left, meter_top_left - meter_height, fog_V4(1, 1, 1, 1), 0.01);
+
+    fog_renderer_draw_text("VITAMIN C", -0.92, -0.8725, 0.5,
+            fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, 1), 0.1,
+            false);
 
     float text_alpha;
     if (fog_logic_now() < 10) {

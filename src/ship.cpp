@@ -33,7 +33,7 @@ Ship init_ship(Vec2 position) {
     travel_particles.alive_time = { 1, 1 };
     travel_particles.rotation = { 0, 0 };
     travel_particles.angular_velocity = { 0, 0 };
-    travel_particles.velocity = { 1, 1 };
+    travel_particles.velocity = { 0.4, 0.6 };
     travel_particles.damping = { 0.5, 0.5 };
     travel_particles.acceleration = { 0, 0 };
     travel_particles.spawn_red = { 155/255.0, 155/255.0 };
@@ -42,6 +42,7 @@ Ship init_ship(Vec2 position) {
     travel_particles.spawn_size = { 0.02, 0.05 };
     travel_particles.spawn_alpha = { 0.2, 0.4 };
     travel_particles.die_alpha = { 0, 0 };
+    travel_particles.position_x = { -0.1, 0.1 };
 
     return {
         body,
@@ -70,7 +71,7 @@ void Ship::update_movement() {
     if (fog_input_down(NAME(UP), P1)) {
         body.velocity += fog_rotate_v2(fog_V2(0, speed * (1 - fog_length_v2(body.velocity)/max_velocity)), body.rotation);
         travel_particles.position = body.position - fog_V2(0, body.scale.y/2.2);
-        travel_particles.velocity_dir = { body.rotation + PI - PI/2 - PI/8, body.rotation + PI - PI/2 + PI/8};
+        travel_particles.velocity_dir = { body.rotation - PI/2 - PI/8, body.rotation - PI/2 + PI/8};
         fog_renderer_particle_spawn(&travel_particles, 2);
     }
     if (fog_input_down(NAME(DOWN), P1)) {

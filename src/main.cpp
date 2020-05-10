@@ -274,8 +274,9 @@ void draw() {
     }
 
     if (text_alpha) {
-        fog_renderer_draw_text("There is a treasure out there...", -0.9, -0.5, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
+        fog_renderer_draw_text("There is a treasure out there...",          -0.9, -0.5, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
         fog_renderer_draw_text("WASD to move - E to interact / leave ship", -0.9, -0.6, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
+        fog_renderer_draw_text("F10 to exit",                               -0.9, -0.7, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
     }
 
     if (game_over) {

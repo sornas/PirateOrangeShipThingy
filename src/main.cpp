@@ -41,7 +41,7 @@ void init_game() {
     WATER = fog_asset_fetch_id("SEA");
 
     SONG_01 = fog_asset_fetch_id("SONG_01_16K");
-    SONG_02 = fog_asset_fetch_id("SONG-02-16K");
+    //SONG_02 = fog_asset_fetch_id("SONG-02-16K");
     SONG_FOG = fog_asset_fetch_id("FOGGIESTOFSONGS_8K");
 
     init_orange_tree();

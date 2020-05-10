@@ -7,6 +7,7 @@ struct OrangeTree;
 
 struct Tile {
     Vec2 rel_position;
+    Body body;
 
     Tile(s32 rel_x, s32 rel_y) : rel_position(fog_V2(rel_x, rel_y)) {}
 };

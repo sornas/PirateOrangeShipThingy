@@ -12,6 +12,8 @@ AssetID TOP_LEFT;
 AssetID TOP_RIGHT;
 AssetID SMALL_ISLAND;
 
+ShapeID TILE_SHAPE;
+
 void island_init(std::vector<Island>& islands) {
 
     init_assets();
@@ -54,12 +56,12 @@ void island_init(std::vector<Island>& islands) {
     // ~~~~~~~~~
     predefined_islands.push_back({
         fog_V2(0, 0), {
-            Tile(-2,  2), Tile(-1,  2), Tile(0,  2), Tile(1,  2),
-            Tile(-3,  1), Tile(-2,  1), Tile(1,  1), Tile(2,  1),
-            Tile(2,  0), Tile(3,  0),
-            Tile(2,  -1), Tile(3,  -1),
-            Tile(-3,  -2), Tile(-2,  -2), Tile(1,  -2), Tile(2,  -2),
-            Tile(-2,  -3), Tile(-1,  -3), Tile(0,  -3), Tile(1,  -3),
+            Tile(-2,  2), Tile(-1,  2), Tile( 0,  2), Tile(1,  2),
+            Tile(-3,  1), Tile(-2,  1), Tile( 1,  1), Tile(2,  1),
+            Tile( 2,  0), Tile( 3,  0),
+            Tile( 2, -1), Tile( 3, -1),
+            Tile(-3, -2), Tile(-2, -2), Tile( 1, -2), Tile(2, -2),
+            Tile(-2, -3), Tile(-1, -3), Tile( 0, -3), Tile(1, -3),
         },
         {}
     });
@@ -81,6 +83,11 @@ void island_init(std::vector<Island>& islands) {
 
     Island first_island = predefined_islands[0];
     first_island.position = fog_V2(64, 64) + fog_V2(2, 0);
+    for (Tile& tile: first_island.tiles) {
+        tile.body = fog_physics_create_body(TILE_SHAPE, 0.0, 1.0, 0.0);
+        tile.body.scale = fog_V2(0.5, 0.5);
+        tile.body.position = first_island.position + (tile.rel_position / 2);
+    }
     islands.push_back(first_island);
 
     int islands_left = 69;
@@ -105,6 +112,12 @@ void island_init(std::vector<Island>& islands) {
                 for (OrangeTree& tree : to_place.trees) {
                     tree.oranges = fog_random_int() % 4;
                 }
+                for (Tile& tile: to_place.tiles) {
+                    tile.body = fog_physics_create_body(TILE_SHAPE, 0.0, 1.0, 0.0);
+                    tile.body.scale = fog_V2(0.5, 0.5);
+                    tile.body.position = to_place.position + (tile.rel_position / 2);
+                    fog_physics_debug_draw_body(&tile.body);
+                }
                 islands.push_back(to_place);
                 break;
             }
@@ -113,6 +126,9 @@ void island_init(std::vector<Island>& islands) {
 }
 
 void island_draw(Island& island) {
+    for (Tile& tile: island.tiles) {
+        fog_physics_debug_draw_body(&tile.body);
+    }
 
     // Tiny island special case
     if (island.tiles.size() == 1) {
@@ -169,4 +185,12 @@ void init_assets() {
     TOP_LEFT = fog_asset_fetch_id("GRASS_TOP_LEFT");
     TOP_RIGHT = fog_asset_fetch_id("GRASS_TOP_RIGHT");
     SMALL_ISLAND = fog_asset_fetch_id("GRASS_SMALL");
+
+    Vec2 points[] = {
+        fog_V2(0, 1),
+        fog_V2(0, 0),
+        fog_V2(1, 0),
+        fog_V2(1, 1),
+    };
+    TILE_SHAPE = fog_physics_add_shape(4, points);
 }

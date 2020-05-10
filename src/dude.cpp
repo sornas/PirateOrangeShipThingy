@@ -19,7 +19,7 @@ Dude init_dude() {
 
     Body body = fog_physics_create_body(dude_shape, 1.0, 0.1, 0.05);
     body.rotation = -PI/2;
-    body.scale = fog_V2(0.2, 0.2);
+    body.scale = fog_V2(0.25, 0.25);
 
     return {
         body,
@@ -76,7 +76,7 @@ void Dude::draw() {
     fog_renderer_push_sprite_rect(
             0,
             body.position,
-            body.scale,
+            fog_V2(0.2, 0.2),
             0,
             cur_asset,
             fog_V2(0, 0),

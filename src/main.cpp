@@ -13,7 +13,6 @@
 #include "treasure.h"
 
 #define PI 3.1415f
-#include <iostream>
 
 Ship ship;
 Dude dude;
@@ -133,11 +132,31 @@ void update() {
             delta_pos.x += 1;
         }
         if (!(delta_pos == fog_V2(0, 0))) {
+            Vec2 prev_pos = dude.body.position;
             dude.walking = 1;
+
             if (fog_length_v2(delta_pos) > 1) {
                 dude.body.position += fog_normalize_v2(delta_pos) * dude.speed * delta;
             } else {
                 dude.body.position += fog_normalize_v2(delta_pos) * dude.speed * delta;
+            }
+
+            b8 can_walk_to = 0;
+            for (Island& island: islands) {
+                if (fog_distance_v2(island.position, dude.body.position) < 10) {
+                    for (Tile& tile: island.tiles) {
+                        if (fog_physics_check_overlap(&tile.body, &dude.body).is_valid) {
+                            can_walk_to = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            can_walk_to |= fog_physics_check_overlap(&ship.body, &dude.body).is_valid;
+
+            if (!can_walk_to) {
+                dude.walking = 0;
+                dude.body.position = prev_pos;
             }
         }
 

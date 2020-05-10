@@ -27,7 +27,7 @@ Ship init_ship(Vec2 position) {
     return {
         body,
         0.01f,  // speed
-        0.01f,  // braking speed
+        0.015f,  // braking speed
         2.0f,  // rotation speed
         2.5f,  // velocity cap
         fog_asset_fetch_id("SHIP"),

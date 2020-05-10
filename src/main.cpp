@@ -92,7 +92,9 @@ void update() {
                 for (Tile& tile: island.tiles) {
                     Overlap overlap = fog_physics_check_overlap(&tile.body, &ship.body);
                     if (overlap.is_valid) {
-                        fog_physics_solve(overlap);
+                        ship.body.velocity *= 0.90;
+                        break;
+                        //fog_physics_solve(overlap);
                     }
                 }
             }

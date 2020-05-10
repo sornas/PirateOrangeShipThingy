@@ -8,7 +8,10 @@ struct Ship {
 
     f32 max_velocity;
 
+    ParticleSystem travel_particles;
+
     AssetID ASSET_SHIP;
+
 
     void update();
     void update_movement();

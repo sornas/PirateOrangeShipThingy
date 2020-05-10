@@ -41,7 +41,7 @@ void draw_pirate_map(PirateMap& pirate_map, Vec2 ship_position) {
                / pirate_map.MAP_SIZE
                / camera->zoom),
             fog_V4(150, 59, 51, 255) / 255,
-            0.02
+            0.015 / camera->zoom
     );
 
 }

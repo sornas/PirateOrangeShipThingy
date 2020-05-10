@@ -79,7 +79,11 @@ void island_init(std::vector<Island>& islands) {
         {}
     });
 
-    int islands_left = 70;
+    Island first_island = predefined_islands[0];
+    first_island.position = fog_V2(64, 64) + fog_V2(2, 0);
+    islands.push_back(first_island);
+
+    int islands_left = 69;
     while (islands_left--) {
         Island to_place = predefined_islands[fog_random_int() % predefined_islands.size()];
 

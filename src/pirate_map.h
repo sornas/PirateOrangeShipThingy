@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdlib>
+#include <stdio.h>
 #include <vector>
 
 #include "fog.h"
@@ -34,10 +35,22 @@ struct PirateMap {
             std::vector<bool> discovered_row;
             for (int j = 0; j < MAP_SIZE; j++) {
                 row.push_back(WATER_TILE);
-                discovered_row.push_back(true);
+                discovered_row.push_back(false);
             }
             tiles.push_back(row);
             discovered.push_back(discovered_row);
+        }
+
+        for (Island& island: islands) {
+            Vec2 pos = island.position;
+            for (Tile& tile: island.tiles) {
+                Vec2 rel_pos = tile.rel_position;
+                if (pos.x + rel_pos.x >= 0
+                        && pos.y + rel_pos.y >= 0
+                        && pos.x + rel_pos.x < MAP_SIZE
+                        && pos.y + rel_pos.y < MAP_SIZE)
+                    this->tiles[pos.y + rel_pos.y][pos.x + rel_pos.x] = GRASS_TILE;
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 #include "pirate_map.h"
 
-void draw_pirate_map(PirateMap &pirate_map, Vec2 ship_position) {
+void draw_pirate_map(PirateMap& pirate_map, Vec2 ship_position) {
     Camera *camera = fog_renderer_fetch_camera(0);
     Vec2 camera_pos = camera->position;
 
@@ -46,7 +46,7 @@ Vec3 color_from_map_tile(MapTile map_tile) {
         case WATER_TILE:
             return fog_V3(56, 56, 113);
         case GRASS_TILE:
-            return fog_V3(66, 85, 51);
+            return fog_V3(66, 120, 51);
         default:
             return fog_V3(0, 0, 0);
     }

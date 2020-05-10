@@ -30,7 +30,7 @@ AssetID SONG_01;
 AssetID SONG_02;
 AssetID SONG_FOG;
 
-int VISION = 4;
+int VISION = 10;
 
 void init_game() {
     fog_random_seed(time(NULL));
@@ -163,6 +163,11 @@ void draw() {
         }
     }
 
+    fog_renderer_push_line(15, fog_V2(0, 0), fog_V2(0, 128), fog_V4(1, 0, 1, 1), 0.05);
+    fog_renderer_push_line(15, fog_V2(0, 0), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
+    fog_renderer_push_line(15, fog_V2(128, 128), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
+    fog_renderer_push_line(15, fog_V2(128, 128), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
+
     ship.draw();
     dude.draw();
 
@@ -176,7 +181,7 @@ void draw() {
         text_alpha = text_alpha < 0 ? 0 : text_alpha;
     }
         fog_renderer_draw_text("There is a treasure out there...", -0.9, -0.5, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
-        fog_renderer_draw_text("wasd to move - e to interact / leave ship", -0.9, -0.6, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
+        fog_renderer_draw_text("WASD to move - E to interact / leave ship", -0.9, -0.6, 0.6, fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, text_alpha), 0.1, false);
 }
 
 int main(int argc, char **argv) {

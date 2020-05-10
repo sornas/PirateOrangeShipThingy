@@ -60,8 +60,15 @@ void Ship::update() {
     while (body.rotation > PI/2) body.rotation -= 2*PI;
 
     fog_physics_integrate(&body, fog_logic_delta());
-    if (!(body.velocity == fog_V2(0, 0)))
+    if (!(body.velocity == fog_V2(0, 0))) {
         body.rotation = atan2(body.velocity.y, body.velocity.x) - PI/2;
+
+        travel_particles.position = body.position - fog_V2(0, body.scale.y/2.2);
+        f32 vel_len = fog_length_v2(body.velocity)/2;
+        travel_particles.velocity = { vel_len, vel_len };
+        travel_particles.velocity_dir = { body.rotation - PI/2 - PI/8, body.rotation - PI/2 + PI/8};
+        fog_renderer_particle_spawn(&travel_particles, 1);
+    }
 
 }
 
@@ -70,9 +77,6 @@ void Ship::update_movement() {
 
     if (fog_input_down(NAME(UP), P1)) {
         body.velocity += fog_rotate_v2(fog_V2(0, speed * (1 - fog_length_v2(body.velocity)/max_velocity)), body.rotation);
-        travel_particles.position = body.position - fog_V2(0, body.scale.y/2.2);
-        travel_particles.velocity_dir = { body.rotation - PI/2 - PI/8, body.rotation - PI/2 + PI/8};
-        fog_renderer_particle_spawn(&travel_particles, 2);
     }
     if (fog_input_down(NAME(DOWN), P1)) {
         if (fog_length_v2(body.velocity) > 0) {

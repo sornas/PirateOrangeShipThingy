@@ -64,7 +64,7 @@ Vec2 Dude::get_movement_delta() {
 void Dude::draw() {
     if (!visible) return;
 
-    fog_physics_debug_draw_body(&body);
+    //fog_physics_debug_draw_body(&body);
 
     if (walking) {
         walking = 0;

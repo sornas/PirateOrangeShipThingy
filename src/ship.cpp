@@ -95,7 +95,7 @@ void Ship::update_movement() {
 
 void Ship::draw() {
     fog_renderer_particle_draw(&travel_particles);
-    fog_physics_debug_draw_body(&body);
+    //fog_physics_debug_draw_body(&body);
 
     s32 asset_scale_x = 0;
     f32 asset_rotation = 0;
@@ -119,5 +119,5 @@ void Ship::draw() {
             fog_V2(512, 512),
             fog_V4(1, 1, 1, 1));
 
-    fog_renderer_push_line(1, body.position, body.position + (body.velocity), fog_V4(1, 0, 0, 1), 0.01);
+    //fog_renderer_push_line(1, body.position, body.position + (body.velocity), fog_V4(1, 0, 0, 1), 0.01);
 }

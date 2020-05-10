@@ -116,7 +116,6 @@ void island_init(std::vector<Island>& islands) {
                     tile.body = fog_physics_create_body(TILE_SHAPE, 0.0, 1.0, 0.0);
                     tile.body.scale = fog_V2(0.5, 0.5);
                     tile.body.position = to_place.position + (tile.rel_position / 2);
-                    fog_physics_debug_draw_body(&tile.body);
                 }
                 islands.push_back(to_place);
                 break;
@@ -126,9 +125,9 @@ void island_init(std::vector<Island>& islands) {
 }
 
 void island_draw(Island& island) {
-    for (Tile& tile: island.tiles) {
-        fog_physics_debug_draw_body(&tile.body);
-    }
+    //for (Tile& tile: island.tiles) {
+    //    fog_physics_debug_draw_body(&tile.body);
+    //}
 
     // Tiny island special case
     if (island.tiles.size() == 1) {

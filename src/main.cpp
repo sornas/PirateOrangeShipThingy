@@ -187,17 +187,17 @@ void draw() {
         }
     }
 
-    fog_renderer_push_line(15, fog_V2(0, 0), fog_V2(0, 128), fog_V4(1, 0, 1, 1), 0.05);
-    fog_renderer_push_line(15, fog_V2(0, 0), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
-    fog_renderer_push_line(15, fog_V2(128, 128), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
-    fog_renderer_push_line(15, fog_V2(128, 128), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
+    //fog_renderer_push_line(15, fog_V2(0, 0), fog_V2(0, 128), fog_V4(1, 0, 1, 1), 0.05);
+    //fog_renderer_push_line(15, fog_V2(0, 0), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
+    //fog_renderer_push_line(15, fog_V2(128, 128), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
+    //fog_renderer_push_line(15, fog_V2(128, 128), fog_V2(128, 0), fog_V4(1, 0, 1, 1), 0.05);
 
     treasure.draw();
     ship.draw();
     dude.draw();
 
     // Line to treasure for debugging
-    fog_renderer_push_line(0, ship.body.position, treasure.body.position, fog_V4(1, 0, 0, 1), 0.01);
+    //fog_renderer_push_line(0, ship.body.position, treasure.body.position, fog_V4(1, 0, 0, 1), 0.01);
 
     draw_pirate_map(pirate_map, ship.body.position);
 

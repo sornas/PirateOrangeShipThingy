@@ -1,21 +1,20 @@
 #pragma once
 #include "fog.h"
 #include "island.h"
+#include <vector>
 
 struct Island;
 
 struct OrangeTree {
-    Vec2 position;
+    Body body;
     int oranges;
 
-    OrangeTree() : position(), oranges() {}
+    OrangeTree() : body(), oranges() {}
 
-    OrangeTree(int x, int y) :
-        position(fog_V2(x, y)),
-        oranges(fog_random_int() % 4)
-    {}
+    OrangeTree(int x, int y);
 
-    void draw(Island& island);
+    void draw();
 };
 
-void init_orange_tree();
+std::vector<OrangeTree*> init_orange_trees(std::vector<Island>& islands);
+void set_up_orange_body();

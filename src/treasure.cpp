@@ -24,6 +24,8 @@ Treasure init_treasure(std::vector<Island>& islands) {
         }
     }
 
+    treasure.body.scale = fog_V2(0.25, 0.25);
+
     return treasure;
 }
 

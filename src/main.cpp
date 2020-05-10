@@ -20,6 +20,7 @@ Dude dude;
 b8 controlling_dude = 0;
 
 std::vector<Island> islands;
+std::vector<OrangeTree*> orange_trees;
 
 PirateMap pirate_map;
 
@@ -42,6 +43,9 @@ float scurvy_decay = 1.0 / 180;
 
 void init_game() {
     fog_random_seed(time(NULL));
+
+    set_up_orange_body();
+
     island_init(islands);
     treasure = init_treasure(islands);
     ship = init_ship(fog_V2(0, 0));
@@ -53,7 +57,7 @@ void init_game() {
     //SONG_02 = fog_asset_fetch_id("SONG-02-16K");
     SONG_FOG = fog_asset_fetch_id("FOGGIESTOFSONGS_8K");
 
-    init_orange_tree();
+    orange_trees = init_orange_trees(islands);
     pirate_map = PirateMap(islands);
 
     game_over = false;
@@ -137,6 +141,14 @@ void update() {
             } else if (fog_physics_check_overlap(&dude.body, &treasure.body).is_valid) {
                 game_over = true;
                 found_treasure = true;
+            } else {
+                for (OrangeTree* tree : orange_trees) {
+                    if (fog_physics_check_overlap(&dude.body, &tree->body).is_valid && tree->oranges) {
+                        tree->oranges--;
+                        scurvy = 1;
+                        break;
+                    }
+                }
             }
         }
 
@@ -209,6 +221,7 @@ void draw() {
     Vec2 meter_width = fog_V2(1.0, 0.0) / camera->zoom;
     Vec2 meter_height = fog_V2(0.0, 0.07) / camera->zoom;
     Vec2 meter_top_left = scurvy_position + (meter_height - meter_width) * 0.5;
+    float border_width = 0.005 / camera->zoom;
     //fog_renderer_push_rectangle(
     //    0,
     //    scurvy_position,
@@ -223,10 +236,10 @@ void draw() {
         fog_V4(178, 120, 53, 255) / 255
     );
 
-    fog_renderer_push_line(0, meter_top_left, meter_top_left + meter_width, fog_V4(1, 1, 1, 1), 0.01);
-    fog_renderer_push_line(0, meter_top_left - meter_height, meter_top_left - meter_height + meter_width, fog_V4(1, 1, 1, 1), 0.01);
-    fog_renderer_push_line(0, meter_top_left + meter_width, meter_top_left + meter_width - meter_height, fog_V4(1, 1, 1, 1), 0.01);
-    fog_renderer_push_line(0, meter_top_left, meter_top_left - meter_height, fog_V4(1, 1, 1, 1), 0.01);
+    fog_renderer_push_line(0, meter_top_left, meter_top_left + meter_width, fog_V4(1, 1, 1, 1), border_width);
+    fog_renderer_push_line(0, meter_top_left - meter_height, meter_top_left - meter_height + meter_width, fog_V4(1, 1, 1, 1), border_width);
+    fog_renderer_push_line(0, meter_top_left + meter_width, meter_top_left + meter_width - meter_height, fog_V4(1, 1, 1, 1), border_width);
+    fog_renderer_push_line(0, meter_top_left, meter_top_left - meter_height, fog_V4(1, 1, 1, 1), border_width);
 
     fog_renderer_draw_text("VITAMIN C", -0.92, -0.8725, 0.5,
             fog_asset_fetch_id("MONACO_FONT"), 0, fog_V4(1, 1, 1, 1), 0.1,

@@ -83,6 +83,7 @@ void island_init(std::vector<Island>& islands) {
 
     Island first_island = predefined_islands[0];
     first_island.position = fog_V2(64, 64) + fog_V2(2, 0);
+    first_island.trees[0].body.position = first_island.position + first_island.trees[0].body.position;
     for (Tile& tile: first_island.tiles) {
         tile.body = fog_physics_create_body(TILE_SHAPE, 0.0, 1.0, 0.0);
         tile.body.scale = fog_V2(0.5, 0.5);
@@ -111,6 +112,7 @@ void island_init(std::vector<Island>& islands) {
                 to_place.position = pos;
                 for (OrangeTree& tree : to_place.trees) {
                     tree.oranges = fog_random_int() % 4;
+                    tree.body.position = pos + tree.body.position;
                 }
                 for (Tile& tile: to_place.tiles) {
                     tile.body = fog_physics_create_body(TILE_SHAPE, 0.0, 1.0, 0.0);
@@ -169,7 +171,7 @@ void island_draw(Island& island) {
     }
 
     for (OrangeTree& orange_tree : island.trees) {
-        orange_tree.draw(island);
+        orange_tree.draw();
     }
 }
 

@@ -11,6 +11,7 @@ struct Ship {
     AssetID ASSET_SHIP;
 
     void update();
+    void update_movement();
     void draw();
 };
 

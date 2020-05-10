@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "fog.h"
+#include "main.h"
 
 #define PI 3.1415f
 
@@ -41,6 +42,31 @@ void Ship::update() {
     fog_physics_integrate(&body, fog_logic_delta());
     if (!(body.velocity == fog_V2(0, 0)))
         body.rotation = atan2(body.velocity.y, body.velocity.x) - PI/2;
+
+}
+
+void Ship::update_movement() {
+    f32 delta = fog_logic_delta();
+
+    if (fog_input_down(NAME(UP), P1)) {
+        body.velocity += fog_rotate_v2(fog_V2(0, speed * (1 - fog_length_v2(body.velocity)/max_velocity)), body.rotation);
+    }
+    if (fog_input_down(NAME(DOWN), P1)) {
+        if (fog_length_v2(body.velocity) > 0) {
+            body.velocity -= fog_rotate_v2(fog_V2(0, braking_speed), body.rotation);
+            if (fog_rotate_v2(body.velocity, -body.rotation).y < 0) {
+                body.velocity = fog_V2(0, 0);
+            }
+        }
+    }
+    if (fog_input_down(NAME(LEFT), P1)) {
+        body.rotation += rotation_speed * delta;
+        body.velocity = fog_rotate_v2(body.velocity, rotation_speed * delta);
+    }
+    if (fog_input_down(NAME(RIGHT), P1)) {
+        body.rotation -= rotation_speed * delta;
+        body.velocity = fog_rotate_v2(body.velocity, -rotation_speed * delta);
+    }
 }
 
 void Ship::draw() {

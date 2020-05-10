@@ -5,10 +5,10 @@ typedef enum {
     DOWN,
     LEFT,
     RIGHT,
-    TOGGLE_SHIP,
+    INTERACT,
     NUM_BINDINGS
 } Binding;
-Name bindings[NUM_BINDINGS];
+inline Name bindings[NUM_BINDINGS];
 
 #define NAME(binding) bindings[binding]
 

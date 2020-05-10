@@ -1,6 +1,7 @@
 #include "fog.h"
 
 #include "dude.h"
+#include "main.h"
 
 #define PI 3.1416
 
@@ -41,6 +42,23 @@ void Dude::update() {
     while (body.rotation > 2*PI) body.rotation -= 2*PI;
 
     fog_physics_integrate(&body, fog_logic_delta());
+}
+
+Vec2 Dude::get_movement_delta() {
+    Vec2 delta_pos = fog_V2(0, 0);
+    if (fog_input_down(NAME(UP), P1)) {
+        delta_pos.y += 1;
+    }
+    if (fog_input_down(NAME(DOWN), P1)) {
+        delta_pos.y -= 1;
+    }
+    if (fog_input_down(NAME(LEFT), P1)) {
+        delta_pos.x -= 1;
+    }
+    if (fog_input_down(NAME(RIGHT), P1)) {
+        delta_pos.x += 1;
+    }
+    return delta_pos;
 }
 
 void Dude::draw() {

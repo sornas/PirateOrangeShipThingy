@@ -14,6 +14,7 @@ struct Dude {
     AssetID cur_asset;
 
     void update();
+    Vec2 get_movement_delta();
     void draw();
     void reset_at(Vec2 position);
 };

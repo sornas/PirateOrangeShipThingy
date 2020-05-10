@@ -36,9 +36,9 @@ Ship init_ship(Vec2 position) {
     travel_particles.velocity = { 1, 1 };
     travel_particles.damping = { 0.5, 0.5 };
     travel_particles.acceleration = { 0, 0 };
-    travel_particles.spawn_red = { 140/255.0, 140/255.0 };
-    travel_particles.spawn_green = { 224/255.0, 224/255.0 };
-    travel_particles.spawn_blue = { 208/255.0, 208/255.0 };
+    travel_particles.spawn_red = { 155/255.0, 155/255.0 };
+    travel_particles.spawn_green = { 155/255.0, 155/255.0 };
+    travel_particles.spawn_blue = { 244/255.0, 244/255.0 };
     travel_particles.spawn_size = { 0.02, 0.05 };
     travel_particles.spawn_alpha = { 0.2, 0.4 };
     travel_particles.die_alpha = { 0, 0 };

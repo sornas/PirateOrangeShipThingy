@@ -7,7 +7,11 @@
 
 ShapeID dude_shape;
 
+AssetID STAR_SPR;
+
 Dude init_dude() {
+    STAR_SPR = fog_asset_fetch_id("STAR_SPR");
+
     {
         Vec2 points[] = {
             fog_V2(0, 1),
@@ -22,6 +26,23 @@ Dude init_dude() {
     body.rotation = -PI/2;
     body.scale = fog_V2(0.25, 0.25);
 
+    ParticleSystem stars = fog_renderer_create_particle_system(3, 100, fog_V2(0, 0));
+    stars.keep_alive = 0;
+    stars.one_alpha = 1;
+    stars.one_size = 0;
+    stars.alive_time = { 1, 1 };
+    stars.rotation = { 0, 0 };
+    stars.angular_velocity = { 0, 2 };
+    stars.velocity = { 0.5, 1 };
+    stars.velocity_dir = { 0, PI };
+    stars.acceleration = { 1, 2 };
+    stars.acceleration_dir = { PI * 3/2, PI * 3/2 };
+    stars.spawn_size = { 0.1, 0.15 };
+    stars.spawn_alpha = { 1, 1 };
+    stars.die_size = { 0, 0 };
+
+    fog_renderer_particle_add_sprite(&stars, STAR_SPR);
+
     return {
         body,
         1,  // speed
@@ -34,14 +55,22 @@ Dude init_dude() {
         fog_asset_fetch_id("PIRATE_WALKING_1"),
         fog_asset_fetch_id("PIRATE_WALKING_2"),
         0,  // cur_asset
+        stars,
     };
 }
 
+void Dude::spawn_stars() {
+    stars.position = body.position;
+    fog_renderer_particle_spawn(&stars, 20);
+}
+
 void Dude::update() {
+    f32 delta = fog_logic_delta();
+
     while (body.rotation < 0)    body.rotation += 2*PI;
     while (body.rotation > 2*PI) body.rotation -= 2*PI;
 
-    fog_physics_integrate(&body, fog_logic_delta());
+    fog_physics_integrate(&body, delta);
 }
 
 Vec2 Dude::get_movement_delta() {

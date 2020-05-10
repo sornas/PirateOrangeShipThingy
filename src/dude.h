@@ -13,6 +13,9 @@ struct Dude {
     AssetID ASSET_WALK_02;
     AssetID cur_asset;
 
+    ParticleSystem stars;
+
+    void spawn_stars();
     void update();
     Vec2 get_movement_delta();
     void draw();

@@ -144,6 +144,7 @@ void update() {
             } else {
                 for (OrangeTree* tree : orange_trees) {
                     if (fog_physics_check_overlap(&dude.body, &tree->body).is_valid && tree->oranges) {
+                        dude.spawn_stars();
                         tree->oranges--;
                         scurvy = 1;
                         break;
@@ -156,6 +157,8 @@ void update() {
         fog_renderer_fetch_camera(0)->position = dude.body.position;
         fog_renderer_fetch_camera(0)->zoom = 1.5;
     }
+
+    fog_renderer_particle_update(&dude.stars, delta);
 
     // Discover surrounding area
     for (int i = -VISION; i <= VISION; i++) {
@@ -175,6 +178,8 @@ void update() {
 }
 
 void draw() {
+    fog_renderer_particle_draw(&dude.stars);
+
     Vec2 offset = fog_V2(-sin(2*fog_logic_now())/40, 0);
 
     // Draw surrounding water

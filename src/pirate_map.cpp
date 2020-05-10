@@ -17,15 +17,16 @@ void draw_pirate_map(PirateMap& pirate_map, Vec2 ship_position) {
     }
     fog_upload_texture(img, img->id);
 
-    f32 point_size = 0.004;
-    Vec2 map_position = camera_pos
-                        + (fog_V2(1, camera->aspect_ratio)
-                           * (1 - (point_size * pirate_map.map_scale) * pirate_map.MAP_SIZE) / camera->zoom);
+    Vec2 map_position =
+        camera_pos
+        + (fog_V2(1, camera->aspect_ratio)
+           / camera->zoom)
+        * (1 - pirate_map.MAP_SCALE/2);
 
     fog_renderer_push_sprite_rect(
             0,
             map_position,
-            fog_V2(1, 1) / camera->zoom * pirate_map.map_scale,
+            fog_V2(1, 1) * pirate_map.MAP_SCALE / camera->zoom,
             0,
             pirate_map.image_id,
             fog_V2(0, 0),
@@ -34,9 +35,13 @@ void draw_pirate_map(PirateMap& pirate_map, Vec2 ship_position) {
 
     fog_renderer_push_point(
             0,
-            map_position + ((ship_position - fog_V2(64, 64)) * point_size / camera->zoom),  //TODO(gu) not correct
+            map_position
+            + ((ship_position - fog_V2(64, 64))
+               * pirate_map.MAP_SCALE
+               / pirate_map.MAP_SIZE
+               / camera->zoom),
             fog_V4(150, 59, 51, 255) / 255,
-            2*point_size / camera->zoom
+            0.02
     );
 
 }

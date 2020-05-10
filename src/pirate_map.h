@@ -22,7 +22,7 @@ struct PirateMap {
     int MAP_SIZE = 128;
     int TILE_SIZE = 3;
     
-    f32 map_scale = 1/1.5;
+    f32 MAP_SCALE = 0.66;
 
     PirateMap() : tiles(), discovered(), image_id() {}
 

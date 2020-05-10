@@ -27,21 +27,20 @@ Ship init_ship(Vec2 position) {
     return {
         body,
         0.01f,  // speed
-        0.005f,  // braking speed
+        0.01f,  // braking speed
         2.0f,  // rotation speed
-        3.5f,  // velocity cap
+        2.5f,  // velocity cap
         fog_asset_fetch_id("SHIP"),
     };
 }
 
 void Ship::update() {
-    while (body.rotation < 0)    body.rotation += 2*PI;
-    while (body.rotation > 2*PI) body.rotation -= 2*PI;
-
-    //body.velocity += (body.velocity * -(fog_length_v2(this-body.>velocity)/max_velocity));
-    //position += velocity;
+    while (body.rotation < -PI * (3/2))    body.rotation += 2*PI;
+    while (body.rotation > PI/2) body.rotation -= 2*PI;
 
     fog_physics_integrate(&body, fog_logic_delta());
+    if (!(body.velocity == fog_V2(0, 0)))
+        body.rotation = atan2(body.velocity.y, body.velocity.x) - PI/2;
 }
 
 void Ship::draw() {
@@ -50,7 +49,7 @@ void Ship::draw() {
     s32 asset_scale_x = 0;
     f32 asset_rotation = 0;
 
-    if (body.rotation < PI) {
+    if (body.rotation > 0 || body.rotation < -PI) {  // workaround for atan2
         asset_scale_x = -1;
     } else {
         asset_scale_x = 1;

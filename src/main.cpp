@@ -86,6 +86,17 @@ void update() {
             }
         }
 
+        for (Island& island: islands) {
+            if (fog_distance_v2(island.position, ship.body.position) < 15) {
+                for (Tile& tile: island.tiles) {
+                    Overlap overlap = fog_physics_check_overlap(&tile.body, &ship.body);
+                    if (overlap.is_valid) {
+                        fog_physics_solve(overlap);
+                    }
+                }
+            }
+        }
+
         fog_renderer_fetch_camera(0)->position = ship.body.position;
         fog_renderer_fetch_camera(0)->zoom = 0.7 - 0.2 * (fog_length_v2(ship.body.velocity) / 3.0);
     } else {  // controlling dude

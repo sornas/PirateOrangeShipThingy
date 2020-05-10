@@ -31,7 +31,8 @@ void island_init(std::vector<Island>& islands) {
             Tile(-1,  0), Tile(0,  0), Tile(1,  0),
             Tile(-1, -1), Tile(0, -1), Tile(1, -1),
         },
-        { OrangeTree(0, 0) }
+        { OrangeTree(0, 0) },
+        ISLAND_STARTER
     });
 
     // Small island
@@ -42,7 +43,8 @@ void island_init(std::vector<Island>& islands) {
         fog_V2(0, 0), {
             Tile(0,  0),
         },
-        {}
+        {},
+        ISLAND_SMALL
     });
 
     // Cresent island
@@ -63,7 +65,8 @@ void island_init(std::vector<Island>& islands) {
             Tile(-3, -2), Tile(-2, -2), Tile( 1, -2), Tile(2, -2),
             Tile(-2, -3), Tile(-1, -3), Tile( 0, -3), Tile(1, -3),
         },
-        {}
+        {},
+        ISLAND_L
     });
 
     // L island
@@ -73,13 +76,64 @@ void island_init(std::vector<Island>& islands) {
     // ~##~
     // ~~~~
     predefined_islands.push_back({
-        fog_V2(3, 3), {
+        fog_V2(0, 0), {
             Tile(-1,  1),
             Tile(-1,  0),
             Tile(-1, -1), Tile(0, -1),
         },
-        {}
+        {},
+        ISLAND_CRESENT
     });
+
+    // Treasure Island
+    // ~~~~~~~~~~
+    // ~~~####~~~
+    // ~~##~~##~~
+    // ~##~~~~##~
+    // ~#~~#~~~#~
+    // ~#~~###~#~
+    // ~##~~~###~
+    // ~~##~~#~~~
+    // ~~~####~~~
+    // ~~~~~~~~~~
+    predefined_islands.push_back({
+        fog_V2(0, 0), {
+                                      Tile(-1, 3), Tile(0, 3), Tile(1, 3), Tile(2, 3),
+                         Tile(-2, 2), Tile(-1, 2),                         Tile(2, 2), Tile(3, 2),
+            Tile(-3, 1), Tile(-2, 1),                                                  Tile(3, 1), Tile(4, 1),
+            Tile(-3, 0),                           Tile(0, 0), Tile(1, 0),                                    Tile(4, 0),
+            Tile(-3,-1),                           Tile(0,-1), Tile(1,-1), Tile(2,-1),             Tile(4,-1),
+            Tile(-3,-2), Tile(-2,-2),                                      Tile(2,-2), Tile(3,-2), Tile(4,-2),
+                         Tile(-2,-3), Tile(-1,-3),                         Tile(2,-3),
+                                      Tile(-1,-4), Tile(0,-4), Tile(1,-4), Tile(2,-4),
+        },
+        { OrangeTree(0, 0) },
+        ISLAND_TREASURE
+    });
+
+
+    // LiU island
+    // ~~~~~~~~~
+    // ~~######~
+    // ~~####~~~
+    // ~~#~~~~~~
+    // ~~####~~~
+    // ~~#~~~~~~
+    // ~~####~~~
+    // ~~~~~~~~~
+    predefined_islands.push_back({
+        fog_V2(0, 0), {
+            Tile(-2, 2), Tile(-1, 2), Tile(0, 2), Tile(1, 2), Tile(2, 2), Tile(3, 2),
+            Tile(-2, 1), Tile(-1, 1), Tile(0, 1), Tile(1, 1),
+            Tile(-2, 0),
+            Tile(-2,-1), Tile(-1,-1), Tile(0,-1), Tile(1,-1),
+            Tile(-2,-2),
+            Tile(-2,-3), Tile(-1,-3), Tile(0,-3), Tile(1,-3),
+        },
+        {},
+        ISLAND_LIU
+    });
+
 
     Island first_island = predefined_islands[0];
     first_island.position = fog_V2(64, 64) + fog_V2(2, 0);

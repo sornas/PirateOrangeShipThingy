@@ -12,10 +12,20 @@ struct Tile {
     Tile(s32 rel_x, s32 rel_y) : rel_position(fog_V2(rel_x, rel_y)) {}
 };
 
+enum IslandType {
+    ISLAND_STARTER,
+    ISLAND_SMALL,
+    ISLAND_L,
+    ISLAND_CRESENT,
+    ISLAND_TREASURE,
+    ISLAND_LIU,
+};
+
 struct Island {
     Vec2 position;
     std::vector<Tile> tiles;
     std::vector<OrangeTree> trees;
+    IslandType type;
 };
 
 void init_assets();
